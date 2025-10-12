@@ -1542,8 +1542,8 @@ function renderAuswertung() {
         if (dist) {
             phasenList.innerHTML = dist.phasen.map(phase => `
                         <div class="phasen-item">
-                            <span>${phase.zeit} - ${escapeHtml(phase.sozialform || 'Keine')}</span>
-                            <span>${escapeHtml(phase.notiz || '')}</span>
+                            <span style="width: 50%;">${phase.zeit} - ${escapeHtml(phase.sozialform || 'Keine')}</span>
+                            <span style="width: 50%;">${escapeHtml(phase.notiz || '')}</span>
                         </div>
                     `).join('');
             phasenDisplay.style.display = 'block';
