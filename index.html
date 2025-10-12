@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospitationsbogen</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/quill.snow.css">
+    <script src="js/script.js"></script>
+    <script src="js/quill.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Hospitationsbogen mit K+5</h1>
+                <div class="section">
+                <h2 class="text-xl font-bold mb-4">Sessions verwalten</h2>
+                <div class="session-mgmt">
+                    <select id="session-select">
+                        <option value="">Session auswählen...</option>
+                    </select>
+                    <button id="new-session">
+                        <span class="icon">➕</span>
+                        Neue Hospitation
+                    </button>
+                    <button id="save-session">
+                        <span class="icon">💾</span>
+                        Speichern
+                    </button>
+                    <button id="import-json">
+                        <span class="icon">⬆️</span>
+                        Import
+                    </button>
+                    <input type="file" id="json-file-input" accept=".json" class="hidden">
+                    <button id="export-json">
+                        <span class="icon">⬇️</span>
+                        Export
+                    </button>
+                    <button id="delete-session" style="display: none;">
+                        <span class="icon">🗑️</span>
+                        Löschen
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-nav">
+            <div class="tabs">
+                <button id="tab-sessions" class="tab-btn">
+                    <span class="icon">ℹ️</span>
+                    Anleitung
+                </button>
+                <button id="tab-erfassung" class="tab-btn active">
+                    <span class="icon">📄</span>
+                    Erfassung
+                </button>
+                <button id="tab-auswertung" class="tab-btn">
+                    <span class="icon">📊</span>
+                    Auswertung
+                </button>
+            </div>
+        </div>
+
+        <!-- Sessions Tab -->
+        <div id="sessions" class="tab-content">
+  
+            <div class="section">
+                <h2 class="text-xl font-bold mb-4">Hilfe zur Benutzung</h2>
+                <div class="modal-body">
+                    <h3>Grundlegende Bedienung</h3>
+                    <ul>
+                        <li>Füllen Sie die Stammdaten aus (Name, Klasse, Fach, Thema, Datum).</li>
+                        <li>Notieren Sie allgemeine Beobachtungen im Editor unten.</li>
+                        <li>Fügen Sie Highlights und Punkte zum Besprechen hinzu.</li>
+                        <li>Laden Sie Fotos hoch (unterstützt Kamera und Dateiauswahl).</li>
+                        <li>Erweitern Sie Kategorien durch Klicken auf den Header (+ wird zu ×).</li>
+                        <li>In jeder Unterkategorie: Wählen Sie eine Bewertung (0-4), fügen Sie Tags hinzu
+                            (vorgefertigte oder eigene) und schreiben Sie Notizen.</li>
+                    </ul>
+                    <h3>Sessions verwalten</h3>
+                    <ul>
+                        <li><strong>Neue Hospitation:</strong> Startet eine leere Session.</li>
+                        <li><strong>Speichern:</strong> Speichert die aktuelle Session lokal im Browser (LocalStorage).
+                        </li>
+                        <li><strong>Auswählen:</strong> Laden Sie eine gespeicherte Session aus der Dropdown-Liste.</li>
+                        <li><strong>Löschen:</strong> Entfernt die ausgewählte Session (Bestätigung erforderlich).</li>
+                    </ul>
+                    <h3>Daten und Datenschutz</h3>
+                    <ul>
+                        <li><strong>Speicherung:</strong> Alle Daten werden ausschließlich lokal im Browser gespeichert
+                            (kein Upload an Server). Bei Löschung des Browser-Caches oder Wechsel des Geräts gehen Daten
+                            verloren.</li>
+                        <li><strong>Export:</strong> Lädt eine JSON-Datei herunter, die alle Daten der aktuellen Session
+                            enthält (inkl. Bewertungen, Notizen, Fotos als Base64).</li>
+                        <li><strong>Import:</strong> Lädt eine JSON-Datei hoch und überschreibt die aktuelle Session.
+                            Unterstützt nur gültige Dateien.</li>
+                        <li><strong>Auswertung:</strong> Wechseln Sie zum Tab "Auswertung" für Statistiken, Details und
+                            Druckansicht (nur Auswertung wird gedruckt).</li>
+                    </ul>
+                    <p>Für Fragen oder Probleme: Dieses Tool basiert auf dem K+5-Modell für guten Unterricht in der
+                        digitalen Welt.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Erfassung Tab -->
+        <div id="erfassung" class="tab-content active">
+            <!-- Stammdaten -->
+            <div class="section">
+                <h2 class="text-2xl font-bold mb-4">Stammdaten</h2>
+                <div class="grid">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Name der Lehrkraft <span
+                                style="color: #ef4444;">*</span></label>
+                        <input type="text" id="name" placeholder="Name eingeben" required
+                            maxlength="50"
+                            title="Name muss 2-50 Buchstaben enthalten (keine Sonderzeichen).">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Klasse</label>
+                        <input type="text" id="klasse" placeholder="z.B. 7a" maxlength="10"
+                            title="Klasse im Format z.B. 7a (Ziffern + Buchstabe).">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Fach</label>
+                        <input type="text" id="fach" placeholder="Fach eingeben"
+                            maxlength="30" title="Fachname 2-30 Buchstaben.">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Thema der Stunde</label>
+                        <input type="text" id="thema" placeholder="Thema eingeben"
+                            maxlength="100"
+                            title="Thema 5-100 Zeichen (Buchstaben, Zahlen, gängige Satzzeichen).">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Datum <span
+                                style="color: #ef4444;">*</span></label>
+                        <input type="date" id="datum" value="" required min="2020-01-01" max="2030-12-31"
+                            title="Datum zwischen 2020 und 2030.">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Unterrichtsdauer (Minuten)</label>
+                        <input type="number" id="dauer" value="45" min="1" max="120"
+                            title="Dauer der Stunde in Minuten (1-120).">
+                    </div>
+                </div>
+
+                <!-- Verlauf der Stunde -->
+                <div class="phasen-container">
+                    <label class="block text-xl font-medium mb-2">Verlauf der Stunde</label>
+                    <div id="phasen-fields"></div>
+                    <button type="button" id="add-phase">+ Phase hinzufügen</button>
+                </div>
+
+                <!-- Allgemeiner Beobachtungstexteditor -->
+                <div class="general-notes">
+                    <label class="block text-xl font-medium mb-2">Allgemeine Beobachtungen</label>
+                    <div id="general-notes-editor"></div>
+                </div>
+
+                <!-- Zusätzliche Felder -->
+                <div class="additional-fields">
+                    <div>
+                        <label class="block text-xl font-medium mb-2">Highlights der Stunde</label>
+                        <div id="highlight-container">
+                            <div id="highlight-fields"></div>
+                            <button type="button" id="add-highlight">+ Hinzufügen</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xl font-medium mb-2">Dinge zum Besprechen</label>
+                        <div id="besprechen-container">
+                            <div id="besprechen-fields"></div>
+                            <button type="button" id="add-besprechen">+ Hinzufügen</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Foto-Upload -->
+                <div class="photo-upload">
+                    <label class="block text-xl font-medium mb-2">
+                        <span class="icon">📷</span>
+                        Foto aufnehmen oder hochladen
+                    </label>
+                    <input type="file" id="photo-upload" accept="image/*" capture="environment" multiple>
+                    <div id="photos-preview"></div>
+                </div>
+
+            </div>
+
+            <!-- Bewertungskategorien -->
+            <div id="kategorien-container"></div>
+        </div>
+
+        <!-- Auswertung Tab -->
+        <div id="auswertung" class="tab-content">
+            <div class="section auswertung">
+                <h2 class="text-2xl font-bold mb-6">Auswertung</h2>
+                <button id="print-button" class="print-button" onclick="window.print()"
+                    style="padding: 0.5rem 1rem; background: #3b82f6; color: white; border: none; border-radius: 0.5rem; cursor: pointer; margin-bottom: 1rem;">
+                    <span class="icon">🖨️</span>
+                    Ausdrucken
+                </button>
+
+                <!-- Übersicht -->
+                <div class="overview">
+                    <h3 class="text-xl font-bold mb-4">Stammdaten</h3>
+                    <div id="stammdaten-overview" class="stammdaten-grid"></div>
+                    <div id="phasen-display" class="phasen-display" style="display: none;">
+                        <h4>Verlauf der Stunde</h4>
+                        <div id="phasen-list" class="phasen-list"></div>
+                    </div>
+                </div>
+
+                <!-- Sozialformen-Verteilung -->
+                <div id="sozialform-distribution" class="sozialform-distribution" style="display: none;">
+                    <h4>Prozentuale Verteilung der Sozialformen (in Minuten)</h4>
+                    <table id="distribution-table" class="distribution-table">
+                        <thead>
+                            <tr>
+                                <th>Sozialform</th>
+                                <th>Minuten</th>
+                                <th>Prozent</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+                <!-- Statistiken -->
+                <div class="stats mb-8">
+                    <h3 class="text-xl font-bold mb-4">Durchschnittsbeobachtungen K+5 (in %)</h3>
+                    <div id="stats-container"></div>
+                </div>
+
+                <!-- Detailansicht -->
+                <div class="details">
+                    <h3 class="text-xl font-bold mb-4">Detailansicht</h3>
+                    <div id="details-container"></div>
+                </div>
+
+                <!-- Fotos -->
+                <div id="auswertung-photos" class="photos-section">
+                    <h3 class="text-xl font-bold mb-4">Fotos</h3>
+                    <div id="auswertung-photos-grid"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div id="image-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <img id="modal-image" src="" alt="">
+        </div>
+    </div>
+</body>
