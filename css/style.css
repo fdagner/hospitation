@@ -336,7 +336,7 @@ textarea:invalid {
     font-size: 0.75rem;
     cursor: pointer;
     transition: background 0.2s;
-    min-height: 35px;
+    min-height: 45px;
 }
 
 .tag-btn:hover {

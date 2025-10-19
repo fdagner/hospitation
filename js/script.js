@@ -40,12 +40,12 @@ const kategorien = {
         beschreibung: 'Grundlage lernwirksamen Unterrichts',
         unterkategorien: {
             'K.1': {
-                titel: 'Präventive Maßnahmen & Regeln',
+                titel: 'Störungsprävention',
                 tags: [
                     // Base: Regeln zum Umgang mit Lernmaterialien
-                    'Regeln zum Umgang mit Lernmaterialien sind nicht bekannt',
-                    'Regeln zum Umgang mit Lernmaterialien sind teilweise bekannt',
-                    'Regeln zum Umgang mit Lernmaterialien sind bekannt',
+                    'Klassen- und schulübergreifende Regeln sind nicht bekannt',
+                    'Klassen- und schulübergreifende Regeln sind teilweise bekannt',
+                    'Klassen- und schulübergreifende Regeln sind bekannt',
                     // Base: Richtlinien zur Kommunikation
                     'Richtlinien zur Kommunikation sind nicht erkennbar',
                     'Richtlinien zur Kommunikation sind teilweise erkennbar',
@@ -58,6 +58,10 @@ const kategorien = {
                     'Störungen werden nicht früh erkannt',
                     'Störungen werden teilweise früh erkannt',
                     'Störungen werden proaktiv und effektiv begegnet',
+                    // Base: Störungen minimieren
+                    'Störungen treten häufig auf',
+                    'Störungen treten teilweise auf',
+                    'Störungen werden minimiert',
                     // Base: Lernklima
                     'Positives Lernklima wird nicht gefördert',
                     'Positives Lernklima wird teilweise gefördert',
@@ -65,12 +69,16 @@ const kategorien = {
                 ]
             },
             'K.2': {
-                titel: 'Aufbereitete Materialien & Routinen',
+                titel: 'Effektive Nutzung der Lernzeit',
                 tags: [
-                    // Base: Lernumgebung vorbereiten
-                    'Lernumgebung wird nicht vorbereitet',
-                    'Lernumgebung wird teilweise vorbereitet',
-                    'Lernumgebung wird vorbereitet',
+                    // Base: Beschäftigung mit Inhalten
+                    'Lernende sind nicht mit Inhalten beschäftigt',
+                    'Lernende sind teilweise mit Inhalten beschäftigt',
+                    'Lernende sind mit Inhalten beschäftigt',
+                    // Base: Arbeitsabläufe
+                    'Arbeitsabläufe sind nicht reibungslos',
+                    'Arbeitsabläufe sind teilweise reibungslos',
+                    'Arbeitsabläufe sind reibungslos',
                     // Base: Materialien zugänglich machen
                     'Materialien werden nicht zugänglich gemacht',
                     'Materialien werden teilweise zugänglich gemacht',
@@ -79,41 +87,12 @@ const kategorien = {
                     'Routinen sind nicht etabliert',
                     'Routinen sind teilweise etabliert',
                     'Routinen sind etabliert',
-                    // Base: Orientierung geben
-                    'Orientierung für Schüler wird nicht gegeben',
-                    'Orientierung für Schüler wird teilweise gegeben',
-                    'Orientierung für Schüler und Lehrkräfte wird gegeben',
                     // Base: Lernhindernisse beseitigen
                     'Lernhindernisse werden nicht beseitigt',
                     'Lernhindernisse werden teilweise beseitigt',
                     'Lernhindernisse werden beseitigt'
                 ]
             },
-            'K.3': {
-                titel: 'Lernhindernisse beseitigen',
-                tags: [
-                    // Base: Beschäftigung mit Inhalten
-                    'Lernende sind nicht mit Inhalten beschäftigt',
-                    'Lernende sind teilweise mit Inhalten beschäftigt',
-                    'Lernende sind mit Inhalten beschäftigt',
-                    // Base: Unterstützung verfügbar
-                    'Unterstützung ist nicht verfügbar',
-                    'Unterstützung ist teilweise verfügbar',
-                    'Unterstützung ist verfügbar',
-                    // Base: Arbeitsabläufe
-                    'Arbeitsabläufe sind nicht reibungslos',
-                    'Arbeitsabläufe sind teilweise reibungslos',
-                    'Arbeitsabläufe sind reibungslos',
-                    // Base: Störungen minimieren
-                    'Störungen treten häufig auf',
-                    'Störungen treten teilweise auf',
-                    'Störungen werden minimiert',
-                    // Base: Lernzeit nutzen
-                    'Lernzeit wird nicht effektiv genutzt',
-                    'Lernzeit wird teilweise effektiv genutzt',
-                    'Lernzeit wird effektiv genutzt'
-                ]
-            }
         }
     },
     1: {
@@ -122,7 +101,7 @@ const kategorien = {
         beschreibung: 'Strukturierung und multimediale Darstellung',
         unterkategorien: {
             '1.1': {
-                titel: 'Strukturierung & Bereitstellung',
+                titel: 'Strukturierung von Lehr- und Lerninhalte',
                 tags: [
                     // Base: Arbeitsaufträge visualisieren
                     'Arbeitsaufträge werden nicht visualisiert',
@@ -143,28 +122,7 @@ const kategorien = {
                 ]
             },
             '1.2': {
-                titel: 'Multimediale Unterstützung',
-                tags: [
-                    // Base: Visuelle Materialien einsetzen
-                    'Visuelle Materialien werden nicht eingesetzt',
-                    'Visuelle Materialien werden teilweise eingesetzt',
-                    'Visuelle Materialien werden eingesetzt',
-                    // Base: Abstrakte Konzepte visualisieren
-                    'Abstrakte Konzepte werden nicht visualisiert',
-                    'Abstrakte Konzepte werden teilweise visualisiert',
-                    'Abstrakte Konzepte werden visualisiert',
-                    // Base: Medien für Verständnis
-                    'Medien fördern Verständnis nicht',
-                    'Medien fördern Verständnis teilweise',
-                    'Medien fördern Verständnis oft',
-                    // Base: Interaktive Elemente
-                    'Interaktive Darstellungen werden nicht verwendet',
-                    'Interaktive Darstellungen werden teilweise verwendet',
-                    'Interaktive Darstellungen werden verwendet'
-                ]
-            },
-            '1.3': {
-                titel: 'Veranschaulichung von Lernergebnissen',
+                titel: 'Anschauliche Darstellung von Unterrichtsinhalten',
                 tags: [
                     // Base: Ergebnisse präsentieren
                     'Schülerergebnisse werden nicht präsentiert',
@@ -181,10 +139,18 @@ const kategorien = {
                     // Base: Kreativität zeigen
                     'Kreativität wird nicht gezeigt',
                     'Kreativität wird teilweise gezeigt',
-                    'Kreativität wird gezeigt'
+                    'Kreativität wird gezeigt',
+                    // Base: Interaktive Elemente
+                    'Interaktive Darstellungen werden nicht verwendet',
+                    'Interaktive Darstellungen werden teilweise verwendet',
+                    'Interaktive Darstellungen werden verwendet',
+                    // Base: Visuelle Materialien einsetzen
+                    'Visuelle/auditive Materialien werden nicht eingesetzt',
+                    'Visuelle/auditive Materialien werden teilweise eingesetzt',
+                    'Visuelle/auditive Materialien werden eingesetzt',
                 ]
             },
-            '1.4': {
+            '1.3': {
                 titel: 'Ergebnissicherung',
                 tags: [
                     // Base: Materialien für Nachbereitung
@@ -213,29 +179,33 @@ const kategorien = {
         beschreibung: 'Schülerorientierung und Medienreflexion',
         unterkategorien: {
             '2.1': {
-                titel: 'Mediennutzung & Reflexion',
+                titel: 'Aufgreifen des Mediennutzungsverhaltens',
                 tags: [
+                    // Base: Bewusster Umgang lehren
+                    'Bewusster Medienumgang zu Lernzwecken wird nicht gefördert',
+                    'Bewusster Medienumgang zu Lernzwecken wird teilweise gefördert',
+                    'Bewusster Medienumgang zu Lernzwecken wird gefördert',
                     // Base: Mediennutzung reflektieren
                     'Mediennutzung wird nicht reflektiert',
                     'Mediennutzung wird teilweise reflektiert',
                     'Mediennutzung wird reflektiert',
-                    // Base: Risiken thematisieren
-                    'Risiken der Mediennutzung werden nicht thematisiert',
-                    'Risiken der Mediennutzung werden teilweise thematisiert',
-                    'Risiken und Chancen der Mediennutzung werden aufgezeigt',
-                    // Base: Bewusster Umgang lehren
-                    'Bewusster Medienumgang wird nicht gelehrt',
-                    'Bewusster Medienumgang wird teilweise gelehrt',
-                    'Bewusster Medienumgang wird gefördert',
                     // Base: Präventionsarbeit
                     'Präventionsarbeit gegen Medienrisiken wird nicht durchgeführt',
                     'Präventionsarbeit gegen Medienrisiken wird teilweise durchgeführt',
-                    'Präventionsarbeit gegen Medienrisiken wird angemessen integriert'
+                    'Präventionsarbeit gegen Medienrisiken wird angemessen integriert',
                 ]
             },
             '2.2': {
-                titel: 'Aktuelle & relevante Themen',
+                titel: 'Alltags- und Anwendungsbezug',
                 tags: [
+                    // Base: Individuelle Interessen berücksichtigen
+                    'Individuelle Interessen werden nicht berücksichtigt',
+                    'Individuelle Interessen werden teilweise berücksichtigt',
+                    'Individuelle Interessen werden berücksichtigt',
+                    // Base: Recherchemöglichkeiten geben
+                    'Recherchemöglichkeiten werden nicht gegeben',
+                    'Recherchemöglichkeiten werden teilweise gegeben',
+                    'Recherchemöglichkeiten werden genutzt',
                     // Base: Aktuelle Themen aufgreifen
                     'Aktuelle Themen werden nicht aufgegriffen',
                     'Aktuelle Themen werden teilweise aufgegriffen',
@@ -244,58 +214,16 @@ const kategorien = {
                     'Lebensweltbezug wird nicht hergestellt',
                     'Lebensweltbezug wird teilweise hergestellt',
                     'Lebensweltbezug wird hergestellt',
-                    // Base: Motivation steigern
-                    'Lernmotivation wird nicht gesteigert',
-                    'Lernmotivation wird teilweise gesteigert',
-                    'Lernmotivation wird gesteigert',
-                    // Base: Transfer in Alltag
-                    'Transfer in den Alltag wird nicht ermöglicht',
-                    'Transfer in den Alltag wird teilweise ermöglicht',
-                    'Transfer in den Alltag wird ermöglicht'
-                ]
-            },
-            '2.3': {
-                titel: 'Authentische Materialien',
-                tags: [
-                    // Base: Authentische Quellen nutzen
-                    'Authentische Materialien werden nicht genutzt',
-                    'Authentische Materialien werden teilweise genutzt',
-                    'Authentische Materialien werden genutzt',
-                    // Base: Recherchemöglichkeiten geben
-                    'Recherchemöglichkeiten werden nicht gegeben',
-                    'Recherchemöglichkeiten werden teilweise gegeben',
-                    'Recherchemöglichkeiten werden genutzt',
-                    // Base: Medienvielfalt
-                    'Medienvielfalt wird nicht erkennbar',
-                    'Medienvielfalt wird teilweise erkennbar',
-                    'Medienvielfalt wird erkennbar',
-                    // Base: Originalquellen
-                    'Originale Quellen werden nicht verwendet',
-                    'Originale Quellen werden teilweise verwendet',
-                    'Originale Quellen werden verwendet'
-                ]
-            },
-            '2.4': {
-                titel: 'Mündige Teilhabe',
-                tags: [
                     // Base: Kompetenzen aufbauen
                     'Kompetenzen zur mündigen Teilhabe werden nicht aufgebaut',
                     'Kompetenzen zur mündigen Teilhabe werden teilweise aufgebaut',
                     'Kompetenzen zur mündigen Teilhabe werden aufgebaut',
-                    // Base: Kritisches Denken fördern
-                    'Kritisches Denken wird nicht gefördert',
-                    'Kritisches Denken wird teilweise gefördert',
-                    'Kritisches Denken wird gefördert',
-                    // Base: Individuelle Interessen berücksichtigen
-                    'Individuelle Interessen werden nicht berücksichtigt',
-                    'Individuelle Interessen werden teilweise berücksichtigt',
-                    'Individuelle Interessen werden berücksichtigt',
-                    // Base: Gesellschaftsteilhabe thematisieren
-                    'Gesellschaftliche Teilhabe wird nicht thematisiert',
-                    'Gesellschaftliche Teilhabe wird teilweise thematisiert',
-                    'Gesellschaftliche Teilhabe wird thematisiert'
+                    // Base: Authentische Quellen nutzen
+                    'Authentische Materialien werden nicht genutzt',
+                    'Authentische Materialien werden teilweise genutzt',
+                    'Authentische Materialien werden genutzt',
                 ]
-            }
+            },
         }
     },
     3: {
@@ -304,7 +232,7 @@ const kategorien = {
         beschreibung: 'Variation der Lehr- und Lernmethoden',
         unterkategorien: {
             '3.1': {
-                titel: 'Methodisches Repertoire',
+                titel: 'Angemessene Variation der Lehr- und Lernmethode',
                 tags: [
                     // Base: Methodenvielfalt
                     'Verschiedene Methoden werden nicht eingesetzt',
@@ -314,79 +242,45 @@ const kategorien = {
                     'Sozialformen werden nicht variiert',
                     'Sozialformen werden teilweise variiert',
                     'Sozialformen werden variiert',
-                    // Base: Interaktive Formate
-                    'Interaktive Formate werden nicht genutzt',
-                    'Interaktive Formate werden teilweise genutzt',
-                    'Interaktive Formate werden genutzt',
+                    // Base: Aufgabenformate variieren
+                    'Aufgabenformate werden nicht variiert',
+                    'Aufgabenformate werden teilweise variiert',
+                    'Aufgabenformate werden variiert',
                     // Base: Aktive Beteiligung
                     'Aktive Beteiligung wird nicht erreicht',
                     'Aktive Beteiligung wird teilweise erreicht',
-                    'Aktive Beteiligung wird erreicht'
-                ]
-            },
-            '3.2': {
-                titel: 'Interaktive Formate',
-                tags: [
-                    // Base: Gamification anwenden
-                    'Gamification-Ansätze werden nicht angewendet',
-                    'Gamification-Ansätze werden teilweise angewendet',
-                    'Gamification-Ansätze werden angewendet',
-                    // Base: Interaktive Aufgaben
-                    'Interaktive Aufgaben werden nicht gestellt',
-                    'Interaktive Aufgaben werden teilweise gestellt',
-                    'Interaktive Aufgaben werden gestellt',
+                    'Aktive Beteiligung wird erreicht',
                     // Base: Motivation steigert
                     'Motivation wird nicht gesteigert',
                     'Motivation wird teilweise gesteigert',
                     'Motivation wird gesteigert',
-                    // Base: Beteiligung hochhalten
-                    'Beteiligung ist nicht hoch',
-                    'Beteiligung ist teilweise hoch',
-                    'Beteiligung ist hoch'
                 ]
             },
-            '3.3': {
-                titel: 'Rhythmisierung',
-                tags: [
-                    // Base: Wechsel der Aktivitäten
-                    'Wechsel der Lernaktivitäten wird nicht geplant',
-                    'Wechsel der Lernaktivitäten wird teilweise geplant',
-                    'Wechsel der Lernaktivitäten wird geplant',
-                    // Base: Konzentration aufrechterhalten
-                    'Konzentration wird nicht aufrechterhalten',
-                    'Konzentration wird teilweise aufrechterhalten',
-                    'Konzentration wird aufrechterhalten',
-                    // Base: Monotonie vermeiden
-                    'Monotonie wird nicht vermieden',
-                    'Monotonie wird teilweise vermieden',
-                    'Monotonie wird vermieden',
-                    // Base: Aufmerksamkeit steuern
-                    'Aufmerksamkeit wird nicht gesteuert',
-                    'Aufmerksamkeit wird teilweise gesteuert',
-                    'Aufmerksamkeit wird gesteuert'
-                ]
-            },
-            '3.4': {
-                titel: 'Analog-digital Verschränkung',
+            '3.2': {
+                titel: 'Lehr-Lern-Settings',
                 tags: [
                     // Base: Analoge Settings anreichern
-                    'Analoge Settings werden nicht angereichert',
-                    'Analoge Settings werden teilweise angereichert',
-                    'Analoge Settings werden angereichert',
+                    'Analoge Settings werden digital nicht angereichert',
+                    'Analoge Settings werden teilweise digital angereichert',
+                    'Analoge Settings werden digital angereichert',
                     // Base: Kooperation fördern
                     'Kooperation wird nicht gefördert',
                     'Kooperation wird teilweise gefördert',
                     'Kooperation wird gefördert',
-                    // Base: Feedback geben
-                    'Peer-Feedback wird nicht gegeben',
-                    'Peer-Feedback wird teilweise gegeben',
-                    'Peer-Feedback wird gegeben',
                     // Base: Ressourcen zugänglich
                     'Zugriff auf Ressourcen wird nicht ermöglicht',
                     'Zugriff auf Ressourcen wird teilweise ermöglicht',
-                    'Zugriff auf Ressourcen wird ermöglicht'
+                    'Zugriff auf Ressourcen wird ermöglicht',
+                    // Base: Peer-Feedback
+                    'Peer-Feedback wird nicht eingesetzt',
+                    'Peer-Feedback wird teilweise eingesetzt',
+                    'Peer-Feedback wird eingesetzt',
+                    // Lernprodukte präsentieren
+                    'Lernprodukte werden gegenseitig nicht präsentiert',
+                    'Lernprodukte werden gegenseitig teilweise präsentiert',
+                    'Lernprodukte werden gegenseitig präsentiert',
                 ]
-            }
+            },
         }
     },
     4: {
@@ -395,7 +289,7 @@ const kategorien = {
         beschreibung: 'Differenzierung und Unterstützung',
         unterkategorien: {
             '4.1': {
-                titel: 'Lernstandserfassung',
+                titel: 'Lernstandserfassung und Anpassung des Lernangebots',
                 tags: [
                     // Base: Tests auswerten
                     'Tests werden nicht automatisch ausgewertet',
@@ -409,55 +303,34 @@ const kategorien = {
                     'Kompetenzstand wird nicht erfasst',
                     'Kompetenzstand wird teilweise erfasst',
                     'Kompetenzstand wird erfasst',
-                    // Base: Individuelle Entwicklung
-                    'Individuelle Entwicklung wird nicht erkennbar',
-                    'Individuelle Entwicklung wird teilweise erkennbar',
-                    'Individuelle Entwicklung wird erkennbar'
-                ]
-            },
-            '4.2': {
-                titel: 'Differenzierte Aufgaben',
-                tags: [
-                    // Base: Anspruch anpassen
-                    'Anspruchsniveau wird nicht angepasst',
-                    'Anspruchsniveau wird teilweise angepasst',
-                    'Anspruchsniveau wird angepasst',
-                    // Base: Lernzugänge anbieten
-                    'Verschiedene Lernzugänge werden nicht angeboten',
-                    'Verschiedene Lernzugänge werden teilweise angeboten',
-                    'Verschiedene Lernzugänge werden angeboten',
                     // Base: Individuelle Voraussetzungen beachten
                     'Individuelle Voraussetzungen werden nicht beachtet',
                     'Individuelle Voraussetzungen werden teilweise beachtet',
                     'Individuelle Voraussetzungen werden beachtet',
-                    // Base: Über-/Unterforderung vermeiden
-                    'Über- und Unterforderung wird nicht vermieden',
-                    'Über- und Unterforderung wird teilweise vermieden',
-                    'Über- und Unterforderung wird vermieden'
                 ]
             },
-            '4.3': {
-                titel: 'Feedback & Unterstützung',
+            '4.2': {
+                titel: 'Lernförderliches Feedback und Unterstützung',
                 tags: [
-                    // Base: Feedback geben
-                    'Zeitnahes Feedback wird nicht gegeben',
-                    'Zeitnahes Feedback wird teilweise gegeben',
-                    'Zeitnahes Feedback wird gegeben',
                     // Base: Unterstützung bereitstellen
                     'Unterstützung bei Aufgaben wird nicht bereitgestellt',
                     'Unterstützung bei Aufgaben wird teilweise bereitgestellt',
                     'Unterstützung bei Aufgaben wird bereitgestellt',
+                    // Base: Feedback geben
+                    'Baldiges Feedback wird nicht gegeben',
+                    'Baldiges Feedback wird teilweise gegeben',
+                    'Baldiges Feedback wird gegeben',
                     // Base: Automatisiertes Feedback
                     'Automatisiertes Feedback wird nicht integriert',
                     'Automatisiertes Feedback wird teilweise integriert',
                     'Automatisiertes Feedback wird integriert',
-                    // Base: Begleitung erweitern
-                    'Begleitung wird nicht erweitert',
-                    'Begleitung wird teilweise erweitert',
-                    'Begleitung wird erweitert'
+                    // Base: Kollaborative Werkzeuge
+                    'Kollaborative Werkzeuge werden nicht genutzt',
+                    'Kollaborative Werkzeuge werden teilweise genutzt',
+                    'Kollaborative Werkzeuge werden genutzt',
                 ]
             },
-            '4.4': {
+            '4.3': {
                 titel: 'Selbststeuerung',
                 tags: [
                     // Base: Autonomie einräumen
@@ -486,28 +359,28 @@ const kategorien = {
         beschreibung: 'Medienproduktive Formate & intelligentes Üben',
         unterkategorien: {
             '5.1': {
-                titel: 'Lernprodukte erstellen',
+                titel: 'Medienproduktive und kollaborative Aufgabenformate',
                 tags: [
+                    // Base: Aktive Auseinandersetzung
+                    'Aktive, kollaborative Auseinandersetzung wird nicht gefördert',
+                    'Aktive, kollaborative Auseinandersetzung wird teilweise gefördert',
+                    'Aktive, kollaborative Auseinandersetzung wird gefördert',
                     // Base: Kreative Produkte erstellen
                     'Kreative Lernprodukte werden nicht erstellt',
                     'Kreative Lernprodukte werden teilweise erstellt',
                     'Kreative Lernprodukte werden erstellt',
-                    // Base: Feedback einarbeiten
-                    'Feedback wird nicht eingearbeitet',
-                    'Feedback wird teilweise eingearbeitet',
-                    'Feedback wird eingearbeitet',
                     // Base: Flexible Erstellung
                     'Flexible Erstellung von Produkten wird nicht ermöglicht',
                     'Flexible Erstellung von Produkten wird teilweise ermöglicht',
                     'Flexible Erstellung von Produkten wird ermöglicht',
-                    // Base: Reflexion des Prozesses
-                    'Entstehungsprozess wird nicht reflektiert',
-                    'Entstehungsprozess wird teilweise reflektiert',
-                    'Entstehungsprozess wird reflektiert'
+                    // Base: Formatives Feedback
+                    'Formatives Feedback wird nicht ermöglicht',
+                    'Formatives Feedback wird teilweise ermöglicht',
+                    'Formatives Feedback wird ermöglicht',
                 ]
             },
             '5.2': {
-                titel: 'Lernstrategien vermitteln',
+                titel: 'Systematischer Erwerb von Kompetenzen',
                 tags: [
                     // Base: Strategien einüben
                     'Lernstrategien werden nicht eingeübt',
@@ -517,6 +390,10 @@ const kategorien = {
                     'Nachhaltiger Wissenserwerb wird nicht gefördert',
                     'Nachhaltiger Wissenserwerb wird teilweise gefördert',
                     'Nachhaltiger Wissenserwerb wird gefördert',
+                    // Base: Reflektierte Nutzung
+                    'Reflektierte Nutzung von Medien wird nicht gefördert',
+                    'Reflektierte Nutzung von Medien wird teilweise gefördert',
+                    'Reflektierte Nutzung von Medien wird gefördert',
                     // Base: Medien zielgerichtet einsetzen
                     'Medien werden nicht zielgerichtet eingesetzt',
                     'Medien werden teilweise zielgerichtet eingesetzt',
@@ -528,28 +405,7 @@ const kategorien = {
                 ]
             },
             '5.3': {
-                titel: 'Medienkompetenz aufbauen',
-                tags: [
-                    // Base: Kompetenzen erwerben
-                    'Medienkompetenzen werden nicht erworben',
-                    'Medienkompetenzen werden teilweise erworben',
-                    'Medienkompetenzen werden erworben',
-                    // Base: Reflektierte Nutzung
-                    'Reflektierte Nutzung wird nicht gefördert',
-                    'Reflektierte Nutzung wird teilweise gefördert',
-                    'Reflektierte Nutzung wird gefördert',
-                    // Base: Aktive Auseinandersetzung
-                    'Aktive Auseinandersetzung wird nicht gefördert',
-                    'Aktive Auseinandersetzung wird teilweise gefördert',
-                    'Aktive Auseinandersetzung wird gefördert',
-                    // Base: Langfristiger Aufbau
-                    'Langfristiger Kompetenzaufbau wird nicht ermöglicht',
-                    'Langfristiger Kompetenzaufbau wird teilweise ermöglicht',
-                    'Langfristiger Kompetenzaufbau wird ermöglicht'
-                ]
-            },
-            '5.4': {
-                titel: 'Differenzierte Übungen',
+                titel: 'Intelligentes Üben und Konsolidieren',
                 tags: [
                     // Base: Differenzierte Übungen
                     'Differenzierte Übungsaufgaben werden nicht angeboten',
