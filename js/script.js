@@ -1,3 +1,30 @@
+// IndexedDB Setup
+const DB_NAME = 'HospitationDB';
+const DB_VERSION = 1;
+const STORE_NAME = 'sessions';
+
+async function openDB() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+        request.onupgradeneeded = (event) => {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains(STORE_NAME)) {
+                db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+            }
+        };
+
+        request.onsuccess = (event) => {
+            resolve(event.target.result);
+        };
+
+        request.onerror = (event) => {
+            reject('Fehler beim Öffnen der IndexedDB: ' + event.target.errorCode);
+        };
+    });
+}
+
+
 // XSS-Prävention: HTML escapen
 function escapeHtml(text) {
     const div = document.createElement('div');
@@ -15,86 +42,76 @@ const kategorien = {
             'K.1': {
                 titel: 'Präventive Maßnahmen & Regeln',
                 tags: [
-                    'Regeln zum Umgang mit Endgeräten werden bekannt gemacht',
-                    'Regeln zum Umgang mit Endgeräten sind im Alltag sichtbar',
-                    'Regeln zum Umgang mit Endgeräten werden konsequent eingefordert',
-                    'Richtlinien zur digitalen Kommunikation werden klar festgelegt',
-                    'Richtlinien zur digitalen Kommunikation werden konsequent umgesetzt',
-                    'Erreichbarkeit wird durch Richtlinien geregelt',
-                    'Lehrkraft ist während digitaler Arbeitsphasen präsent',
-                    'Lehrkraft klärt offene Fragen in digitalen Phasen',
-                    'Lehrkraft achtet auf Sichtbarkeit der Bildschirme',
-                    'Aktivitäten der Schülerinnen und Schüler werden im digitalen Raum begleitet',
-                    'Probleme werden frühzeitig erkannt',
-                    'Maßnahmen bei Störungen werden ergriffen',
-                    'Ablenkungspotenzial wird durch Regelungen minimiert',
-                    'Regelung für Geräteverwahrung wird in Phasen ohne Nutzung klar gemacht',
-                    'Klare Phasen ohne Nutzung digitaler Geräte werden etabliert',
-                    'School-wide Regeln zum Umgang mit Geräten werden etabliert',
-                    'Rituale für digitale Kommunikation werden eingeführt',
-                    'Absprachen werden konsequent umgesetzt',
-                    'Wertschätzende Beziehung zwischen Lehrkraft und Schülerinnen und Schüler wird gepflegt',
-                    'Vertrauensvolles Lernklima wird geschaffen',
-                    'Positive Lernatmosphäre wird gefördert',
-                    'Störungen treten selten auf',
-                    'Unterrichtszeit wird effektiv genutzt',
-                    'Klassen- und schulübergreifende Regeln werden bekannt gemacht'
+                    // Base: Regeln zum Umgang mit Lernmaterialien
+                    'Regeln zum Umgang mit Lernmaterialien sind nicht bekannt',
+                    'Regeln zum Umgang mit Lernmaterialien sind teilweise bekannt',
+                    'Regeln zum Umgang mit Lernmaterialien sind bekannt',
+                    // Base: Richtlinien zur Kommunikation
+                    'Richtlinien zur Kommunikation sind nicht erkennbar',
+                    'Richtlinien zur Kommunikation sind teilweise erkennbar',
+                    'Richtlinien zur Kommunikation sind erkannbar',
+                    // Base: Lehrkraft-Präsenz
+                    'Lehrkraft ist während Lernphasen nicht präsent',
+                    'Lehrkraft ist während Lernphasen teilweise präsent',
+                    'Lehrkraft ist während Lernphasen präsent',
+                    // Base: Störungen handhaben
+                    'Störungen werden nicht früh erkannt',
+                    'Störungen werden teilweise früh erkannt',
+                    'Störungen werden proaktiv und effektiv begegnet',
+                    // Base: Lernklima
+                    'Positives Lernklima wird nicht gefördert',
+                    'Positives Lernklima wird teilweise gefördert',
+                    'Vertrauensvolles Lernklima wird gepflegt'
                 ]
             },
             'K.2': {
                 titel: 'Aufbereitete Materialien & Routinen',
                 tags: [
-                    'Einheitliche Strukturen werden für den Unterricht festgelegt',
-                    'Systematik zur Dateiablage wird etabliert',
-                    'Einheitliche Benennung von Dokumenten wird eingeführt',
-                    'Verwendete Software wird schulweit festgelegt',
-                    'Digitale Lernumgebung wird vorbereitet',
-                    'Materialien werden leicht zugänglich gemacht',
-                    'Materialien werden sorgfältig aufbereitet',
-                    'Verteilen von Materialien läuft reibungslos über Plattformen',
-                    'Einsammeln von Aufgaben funktioniert über Lernplattform',
-                    'Bearbeitungsfristen werden klar kommuniziert',
-                    'Aufgaben werden strukturiert verteilt',
-                    'Digitale Arbeitsweisen werden schrittweise eingeführt',
-                    'Routinen werden etabliert',
-                    'Bedienkompetenzen werden eingeübt',
-                    'Systematische Einführung digitaler Tools erfolgt',
-                    'Fokus bleibt auf Lerninhalten',
-                    'Orientierung wird für Schülerinnen und Schüler gegeben',
-                    'Orientierung wird für Lehrkräfte gegeben',
-                    'Jahrgangsstufenübergreifende Standards werden vereinbart',
-                    'Schulweite Vereinbarungen werden erkennbar gemacht',
-                    'Vorbereitete Lernumgebung unterstützt Arbeitsabläufe',
-                    'Lernende sind erkennbar mit Inhalten beschäftigt',
-                    'Lernhindernisse werden schnell beseitigt'
+                    // Base: Lernumgebung vorbereiten
+                    'Lernumgebung wird nicht vorbereitet',
+                    'Lernumgebung wird teilweise vorbereitet',
+                    'Lernumgebung wird vorbereitet',
+                    // Base: Materialien zugänglich machen
+                    'Materialien werden nicht zugänglich gemacht',
+                    'Materialien werden teilweise zugänglich gemacht',
+                    'Materialien werden zugänglich gemacht',
+                    // Base: Routinen etablieren
+                    'Routinen sind nicht etabliert',
+                    'Routinen sind teilweise etabliert',
+                    'Routinen sind etabliert',
+                    // Base: Orientierung geben
+                    'Orientierung für Schüler wird nicht gegeben',
+                    'Orientierung für Schüler wird teilweise gegeben',
+                    'Orientierung für Schüler und Lehrkräfte wird gegeben',
+                    // Base: Lernhindernisse beseitigen
+                    'Lernhindernisse werden nicht beseitigt',
+                    'Lernhindernisse werden teilweise beseitigt',
+                    'Lernhindernisse werden beseitigt'
                 ]
             },
             'K.3': {
                 titel: 'Lernhindernisse beseitigen',
                 tags: [
-                    'Lernende sind mit Lerninhalten beschäftigt',
-                    'Konzentrierte Auseinandersetzung wird erkennbar',
-                    'Lernhindernisse werden schnell beseitigt',
-                    'Unterrichtszeit wird effektiv genutzt',
-                    'Reibungslose Arbeitsabläufe werden gewährleistet',
-                    'Wenige Störungen treten auf',
-                    'Störungen werden angemessen begegnet',
-                    'Positives Lernklima wird geschaffen',
-                    'Lernzeit wird nicht verschwendet',
-                    'Technische Probleme werden zügig gelöst',
-                    'Fragen werden zeitnah beantwortet',
+                    // Base: Beschäftigung mit Inhalten
+                    'Lernende sind nicht mit Inhalten beschäftigt',
+                    'Lernende sind teilweise mit Inhalten beschäftigt',
+                    'Lernende sind mit Inhalten beschäftigt',
+                    // Base: Unterstützung verfügbar
+                    'Unterstützung ist nicht verfügbar',
+                    'Unterstützung ist teilweise verfügbar',
                     'Unterstützung ist verfügbar',
-                    'Selbstständiges Arbeiten wird ermöglicht',
-                    'Klare Arbeitsanweisungen werden gegeben',
-                    'Struktur gibt Sicherheit',
-                    'Übergänge sind fließend',
-                    'Wartezeiten werden vermieden',
-                    'Material ist griffbereit',
-                    'Technische Ausstattung funktioniert zuverlässig',
-                    'Fokussierung auf Lernprozess wird gehalten',
-                    'Effektive Nutzung der Lernzeit wird erreicht',
-                    'Lernende werden mit Inhalten beschäftigt gehalten',
-                    'Hindernisse werden proaktiv beseitigt'
+                    // Base: Arbeitsabläufe
+                    'Arbeitsabläufe sind nicht reibungslos',
+                    'Arbeitsabläufe sind teilweise reibungslos',
+                    'Arbeitsabläufe sind reibungslos',
+                    // Base: Störungen minimieren
+                    'Störungen treten häufig auf',
+                    'Störungen treten teilweise auf',
+                    'Störungen werden minimiert',
+                    // Base: Lernzeit nutzen
+                    'Lernzeit wird nicht effektiv genutzt',
+                    'Lernzeit wird teilweise effektiv genutzt',
+                    'Lernzeit wird effektiv genutzt'
                 ]
             }
         }
@@ -107,113 +124,85 @@ const kategorien = {
             '1.1': {
                 titel: 'Strukturierung & Bereitstellung',
                 tags: [
-                    'Arbeitsaufträge werden klar visualisiert',
-                    'Unterrichtsinhalte werden strukturiert bereitgestellt',
-                    'Bereitstellung ist nachvollziehbar',
-                    'Erwartungen werden transparent kommuniziert',
-                    'Anforderungen werden klar gemacht',
-                    'Kursabläufe werden übersichtlich dargestellt',
-                    'Zwischenziele werden definiert',
-                    'Abgabetermine werden sichtbar gemacht',
+                    // Base: Arbeitsaufträge visualisieren
+                    'Arbeitsaufträge werden nicht visualisiert',
+                    'Arbeitsaufträge werden teilweise visualisiert',
+                    'Arbeitsaufträge werden visualisiert',
+                    // Base: Lernziele kommunizieren
+                    'Lernziele werden nicht kommuniziert',
+                    'Lernziele werden teilweise kommuniziert',
                     'Lernziele werden kommuniziert',
-                    'Orientierung wird gegeben',
-                    'Roter Faden wird erkennbar',
-                    'Phasen werden strukturiert',
-                    'Übergänge werden markiert',
-                    'Zeitplan wird transparent',
-                    'Materialien werden geordnet',
-                    'Aufgaben werden klar formuliert',
-                    'Schrittweise Anleitung wird gegeben',
-                    'Visuelle Unterstützung wird bereitgestellt',
-                    'Digitale Organisation wird erkennbar',
-                    'Lernplattform wird genutzt',
-                    'Strukturierung der Lehr- und Lerninhalte wird unterstützt',
-                    'Klare Visualisierung von Arbeitsaufträgen erfolgt',
-                    'Nachvollziehbare Strukturierung wird gewährleistet'
+                    // Base: Strukturierung der Inhalte
+                    'Unterrichtsinhalte werden nicht strukturiert',
+                    'Unterrichtsinhalte werden teilweise strukturiert',
+                    'Unterrichtsinhalte werden strukturiert',
+                    // Base: Orientierung geben
+                    'Orientierung wird nicht gegeben',
+                    'Orientierung wird teilweise gegeben',
+                    'Orientierung wird gegeben'
                 ]
             },
             '1.2': {
                 titel: 'Multimediale Unterstützung',
                 tags: [
+                    // Base: Visuelle Materialien einsetzen
+                    'Visuelle Materialien werden nicht eingesetzt',
+                    'Visuelle Materialien werden teilweise eingesetzt',
                     'Visuelle Materialien werden eingesetzt',
-                    'Auditive Materialien werden genutzt',
-                    'Kombination visuell-auditiv wird angewendet',
+                    // Base: Abstrakte Konzepte visualisieren
+                    'Abstrakte Konzepte werden nicht visualisiert',
+                    'Abstrakte Konzepte werden teilweise visualisiert',
                     'Abstrakte Konzepte werden visualisiert',
-                    'Visualisierungen unterstützen Verständnis',
-                    'Simulationen werden gezeigt',
-                    'Interaktive Modelle werden im Einsatz',
-                    'Theoretische Konzepte werden nachvollziehbar gemacht',
-                    'Komplexe Inhalte werden anschaulich dargestellt',
-                    'Multimediale Angebote werden bereitgestellt',
-                    'Videos unterstützen Lernprozess',
-                    'Bilder veranschaulichen Inhalte',
-                    'Grafiken erleichtern Verständnis',
-                    'Animationen werden genutzt',
-                    'Interaktive Darstellungen werden verwendet',
-                    'Digitale Medien fördern Verstehen',
-                    'Aufmerksamkeit wird gelenkt',
-                    'Interesse wird geweckt',
-                    'Anschaulichkeit wird gegeben',
-                    'Informationsverarbeitung wird unterstützt',
-                    'Multimediale Angebote fördern Lernprozess',
-                    'Abstrakte Konzepte werden durch Simulationen erklärt',
-                    'Interaktive Modelle machen Inhalte greifbar'
+                    // Base: Medien für Verständnis
+                    'Medien fördern Verständnis nicht',
+                    'Medien fördern Verständnis teilweise',
+                    'Medien fördern Verständnis oft',
+                    // Base: Interaktive Elemente
+                    'Interaktive Darstellungen werden nicht verwendet',
+                    'Interaktive Darstellungen werden teilweise verwendet',
+                    'Interaktive Darstellungen werden verwendet'
                 ]
             },
             '1.3': {
                 titel: 'Veranschaulichung von Lernergebnissen',
                 tags: [
+                    // Base: Ergebnisse präsentieren
+                    'Schülerergebnisse werden nicht präsentiert',
+                    'Schülerergebnisse werden teilweise präsentiert',
                     'Schülerergebnisse werden präsentiert',
-                    'Videos zeigen Lernergebnisse',
-                    'Bilder dokumentieren Ergebnisse',
-                    'eBooks werden als Ergebnisformat genutzt',
-                    'Digitale Produkte werden sichtbar gemacht',
-                    'Lernprodukte werden veranschaulicht',
-                    'Präsentationen der Ergebnisse werden gehalten',
-                    'Sichtbare Dokumentation wird erstellt',
-                    'Ergebnisse werden gewürdigt',
-                    'Digitale Galerie wird eingerichtet',
-                    'Portfolio wird genutzt',
-                    'Lernfortschritte werden sichtbar gemacht',
-                    'Produkte werden geteilt',
-                    'Öffentliche Präsentation wird ermöglicht',
-                    'Peer-Viewing wird ermöglicht',
-                    'Ergebnisvielfalt wird erkennbar',
-                    'Kreativität wird gezeigt',
-                    'Leistungen werden wertgeschätzt',
-                    'Multimediale Ergebnisformen werden verwendet',
-                    'Verschiedene Präsentationsformate werden angeboten',
-                    'Sichtbare Präsentation von Schülerergebnissen erfolgt',
-                    'Strukturierte Sicherung von Ergebnissen wird unterstützt',
-                    'Vertiefung von Unterrichtsinhalten wird ermöglicht'
+                    // Base: Lernprodukte sichtbar machen
+                    'Lernprodukte werden nicht sichtbar gemacht',
+                    'Lernprodukte werden teilweise sichtbar gemacht',
+                    'Lernprodukte werden sichtbar gemacht',
+                    // Base: Fortschritte dokumentieren
+                    'Lernfortschritte werden nicht dokumentiert',
+                    'Lernfortschritte werden teilweise dokumentiert',
+                    'Lernfortschritte werden dokumentiert',
+                    // Base: Kreativität zeigen
+                    'Kreativität wird nicht gezeigt',
+                    'Kreativität wird teilweise gezeigt',
+                    'Kreativität wird gezeigt'
                 ]
             },
             '1.4': {
                 titel: 'Ergebnissicherung',
                 tags: [
-                    'Materialien zur Vor- und Nachbereitung werden bereitgestellt',
+                    // Base: Materialien für Nachbereitung
+                    'Materialien zur Nachbereitung werden nicht bereitgestellt',
+                    'Materialien zur Nachbereitung werden teilweise bereitgestellt',
+                    'Materialien zur Nachbereitung werden bereitgestellt',
+                    // Base: Inhalte sichern
+                    'Unterrichtsinhalte werden nicht gesichert',
+                    'Unterrichtsinhalte werden teilweise gesichert',
                     'Unterrichtsinhalte werden gesichert',
-                    'Strukturierte Sicherung wird durchgeführt',
-                    'Vertiefung wird ermöglicht',
-                    'Unterrichtsdokumentation wird erstellt',
-                    'Dateiablage wird organisiert',
-                    'Lernplattform wird genutzt',
-                    'Hefteinträge werden mit Hyperlinks ergänzt',
-                    'Ergänzende Materialien werden verlinkt',
+                    // Base: Wiederholung unterstützen
+                    'Wiederholung wird nicht unterstützt',
+                    'Wiederholung wird teilweise unterstützt',
                     'Wiederholung wird unterstützt',
-                    'Lernen wird gefördert',
-                    'Nachbereitung wird möglich gemacht',
-                    'Vorbereitung wird erleichtert',
-                    'Materialzugriff wird jederzeit ermöglicht',
-                    'Digitale Ablage wird strukturiert',
-                    'Inhalte werden abrufbar gemacht',
-                    'Sicherung wird nachhaltig gestaltet',
-                    'Übersichtliche Organisation wird gewährleistet',
-                    'Materialien werden verfügbar gehalten',
-                    'Langfristige Nutzung wird ermöglicht',
-                    'Strukturierte Sicherung und Vertiefung von Inhalten erfolgt',
-                    'Materialbereitstellung zur Vor- und Nachbereitung wird genutzt',
-                    'Unterstützende Wiederholung der Inhalte wird angeboten'
+                    // Base: Ablage organisieren
+                    'Ablage wird nicht organisiert',
+                    'Ablage wird teilweise organisiert',
+                    'Ablage wird organisiert'
                 ]
             }
         }
@@ -226,113 +215,85 @@ const kategorien = {
             '2.1': {
                 titel: 'Mediennutzung & Reflexion',
                 tags: [
-                    'Mediennutzung wird zu gezielten Lernzwecken gefördert',
-                    'Mediennutzung geht über private Unterhaltungszwecke hinaus',
-                    'Alltägliches Medienhandeln wird reflektiert',
-                    'Gezielte Reflexion des Mediennutzungsverhaltens erfolgt',
-                    'Mediennutzungsverhalten wird thematisiert',
-                    'Präventionsarbeit wird erkennbar durchgeführt',
-                    'Übermäßiger Medienkonsum wird als Thema aufgegriffen',
-                    'Problematische Inhalte werden aufgegriffen',
-                    'Herausforderungen der digitalen Welt werden thematisiert',
-                    'Kritische Auseinandersetzung mit Medien wird gefördert',
-                    'Bewusster Medienumgang wird gelehrt',
-                    'Reflexion der eigenen Nutzung wird angeregt',
-                    'Medienerfahrungen werden berücksichtigt',
-                    'Nutzungsgewohnheiten werden angesprochen',
-                    'Risiken der Mediennutzung werden thematisiert',
-                    'Chancen der Mediennutzung werden aufgezeigt',
-                    'Verantwortungsvoller Umgang wird vermittelt',
-                    'Selbstreflexion wird gefördert',
-                    'Medienbildung wird integriert',
-                    'Sensibilisierung für Medienrisiken erfolgt',
-                    'Gezielte Präventionsarbeit gegen problematische Inhalte wird betrieben',
-                    'Alltägliches Verhalten wird reflektiert',
-                    'Medienkonsum wird überprüft'
+                    // Base: Mediennutzung reflektieren
+                    'Mediennutzung wird nicht reflektiert',
+                    'Mediennutzung wird teilweise reflektiert',
+                    'Mediennutzung wird reflektiert',
+                    // Base: Risiken thematisieren
+                    'Risiken der Mediennutzung werden nicht thematisiert',
+                    'Risiken der Mediennutzung werden teilweise thematisiert',
+                    'Risiken und Chancen der Mediennutzung werden aufgezeigt',
+                    // Base: Bewusster Umgang lehren
+                    'Bewusster Medienumgang wird nicht gelehrt',
+                    'Bewusster Medienumgang wird teilweise gelehrt',
+                    'Bewusster Medienumgang wird gefördert',
+                    // Base: Präventionsarbeit
+                    'Präventionsarbeit gegen Medienrisiken wird nicht durchgeführt',
+                    'Präventionsarbeit gegen Medienrisiken wird teilweise durchgeführt',
+                    'Präventionsarbeit gegen Medienrisiken wird angemessen integriert'
                 ]
             },
             '2.2': {
                 titel: 'Aktuelle & relevante Themen',
                 tags: [
+                    // Base: Aktuelle Themen aufgreifen
+                    'Aktuelle Themen werden nicht aufgegriffen',
+                    'Aktuelle Themen werden teilweise aufgegriffen',
                     'Aktuelle Themen werden aufgegriffen',
-                    'Relevante Inhalte für Schülerinnen und Schüler werden ausgewählt',
-                    'Realitätsnahe Kontexte werden genutzt',
+                    // Base: Lebensweltbezug herstellen
+                    'Lebensweltbezug wird nicht hergestellt',
+                    'Lebensweltbezug wird teilweise hergestellt',
                     'Lebensweltbezug wird hergestellt',
-                    'Interesse wird geweckt',
+                    // Base: Motivation steigern
+                    'Lernmotivation wird nicht gesteigert',
+                    'Lernmotivation wird teilweise gesteigert',
                     'Lernmotivation wird gesteigert',
-                    'Praxisnahe Beispiele werden eingesetzt',
-                    'Lebenswirklichkeit wird berücksichtigt',
-                    'Authentische Situationen werden behandelt',
-                    'Bezug zur Gegenwart wird hergestellt',
-                    'Gesellschaftliche Relevanz wird thematisiert',
-                    'Alltagsbezug wird vorhanden gehalten',
-                    'Schülerorientierung wird erkennbar',
-                    'Themen werden aus Schülerperspektive behandelt',
-                    'Bedeutsamkeit wird klar gemacht',
-                    'Anwendungsbezug wird gegeben',
-                    'Transfer in Alltag wird möglich gemacht',
-                    'Sinnhaftigkeit wird erkennbar',
-                    'Zukunftsorientierung wird integriert',
-                    'Aktualität wird gegeben',
-                    'Aktuelle und relevante Themen werden aufgegriffen',
-                    'Lernen wird an realitätsnahen Kontexten ausgerichtet',
-                    'Interesse der Lernenden wird geweckt'
+                    // Base: Transfer in Alltag
+                    'Transfer in den Alltag wird nicht ermöglicht',
+                    'Transfer in den Alltag wird teilweise ermöglicht',
+                    'Transfer in den Alltag wird ermöglicht'
                 ]
             },
             '2.3': {
                 titel: 'Authentische Materialien',
                 tags: [
-                    'Zeitungsartikel werden genutzt',
-                    'Fernsehsendungen werden eingebunden',
-                    'Podcasts werden im Unterricht verwendet',
-                    'Videokanäle werden integriert',
-                    'Wikis werden als Quelle genutzt',
-                    'Websites werden bewusst integriert',
-                    'Aus dem Alltag bekannte Quellen werden verwendet',
-                    'Bewusste Integration von Quellen erfolgt',
-                    'Reflektierte Nutzung von Medien wird gefördert',
-                    'Recherchemöglichkeiten werden gegeben',
-                    'Verschiedene Informationsquellen werden zugänglich gemacht',
-                    'Zugang zu Lernangeboten wird ermöglicht',
-                    'Authentisches Material wird eingesetzt',
-                    'Originale Quellen werden genutzt',
-                    'Reale Medien werden integriert',
-                    'Vielfältige Formate werden angeboten',
-                    'Digitale Ressourcen werden bereitgestellt',
+                    // Base: Authentische Quellen nutzen
+                    'Authentische Materialien werden nicht genutzt',
+                    'Authentische Materialien werden teilweise genutzt',
+                    'Authentische Materialien werden genutzt',
+                    // Base: Recherchemöglichkeiten geben
+                    'Recherchemöglichkeiten werden nicht gegeben',
+                    'Recherchemöglichkeiten werden teilweise gegeben',
+                    'Recherchemöglichkeiten werden genutzt',
+                    // Base: Medienvielfalt
+                    'Medienvielfalt wird nicht erkennbar',
+                    'Medienvielfalt wird teilweise erkennbar',
                     'Medienvielfalt wird erkennbar',
-                    'Verschiedene Medientypen werden verwendet',
-                    'Quellenvielfalt wird gegeben',
-                    'Recherchemöglichkeiten und Wissensquellen werden integriert',
-                    'Bekannte Alltagsquellen werden reflektiert genutzt',
-                    'Zeitungsartikel und Podcasts werden als authentische Materialien eingebunden'
+                    // Base: Originalquellen
+                    'Originale Quellen werden nicht verwendet',
+                    'Originale Quellen werden teilweise verwendet',
+                    'Originale Quellen werden verwendet'
                 ]
             },
             '2.4': {
                 titel: 'Mündige Teilhabe',
                 tags: [
-                    'Gesellschaftliche Teilhabe wird thematisiert',
-                    'Wichtige Kompetenzen werden aufgebaut',
-                    'Mündige Teilhabe wird gefördert',
-                    'Lernförderliche Mediennutzung wird ermöglicht',
-                    'Individuelle Interessen werden berücksichtigt',
-                    'Verschiedene Lernwege werden möglich gemacht',
-                    'Informationsquellen werden zugänglich gemacht',
-                    'Lernangebote werden vielfältig angeboten',
-                    'Recherchemöglichkeiten werden vorhanden gehalten',
-                    'Wissensquellen werden bekannt gemacht',
-                    'Kindern und Jugendlichen vertraute Quellen werden integriert',
-                    'Demokratische Teilhabe wird unterstützt',
+                    // Base: Kompetenzen aufbauen
+                    'Kompetenzen zur mündigen Teilhabe werden nicht aufgebaut',
+                    'Kompetenzen zur mündigen Teilhabe werden teilweise aufgebaut',
+                    'Kompetenzen zur mündigen Teilhabe werden aufgebaut',
+                    // Base: Kritisches Denken fördern
+                    'Kritisches Denken wird nicht gefördert',
+                    'Kritisches Denken wird teilweise gefördert',
                     'Kritisches Denken wird gefördert',
-                    'Meinungsbildung wird unterstützt',
-                    'Medienmündigkeit wird entwickelt',
-                    'Verantwortung wird übernommen gelehrt',
-                    'Partizipation wird ermöglicht',
-                    'Selbstbestimmung wird gefördert',
-                    'Urteilsfähigkeit wird gestärkt',
-                    'Emanzipation wird unterstützt',
-                    'Aufbau wichtiger Kompetenzen zur mündigen Teilhabe erfolgt',
-                    'Individuelle Interessen und Lernwege werden berücksichtigt',
-                    'Lernförderliche Mediennutzung ermöglicht mündige Gesellschaftsteilhabe'
+                    // Base: Individuelle Interessen berücksichtigen
+                    'Individuelle Interessen werden nicht berücksichtigt',
+                    'Individuelle Interessen werden teilweise berücksichtigt',
+                    'Individuelle Interessen werden berücksichtigt',
+                    // Base: Gesellschaftsteilhabe thematisieren
+                    'Gesellschaftliche Teilhabe wird nicht thematisiert',
+                    'Gesellschaftliche Teilhabe wird teilweise thematisiert',
+                    'Gesellschaftliche Teilhabe wird thematisiert'
                 ]
             }
         }
@@ -345,113 +306,85 @@ const kategorien = {
             '3.1': {
                 titel: 'Methodisches Repertoire',
                 tags: [
+                    // Base: Methodenvielfalt
+                    'Verschiedene Methoden werden nicht eingesetzt',
+                    'Verschiedene Methoden werden teilweise eingesetzt',
                     'Verschiedene Methoden werden eingesetzt',
+                    // Base: Sozialformen variieren
+                    'Sozialformen werden nicht variiert',
+                    'Sozialformen werden teilweise variiert',
                     'Sozialformen werden variiert',
-                    'Didaktisch-methodisches Repertoire wird erkennbar',
-                    'Flexibler Einsatz von Methoden erfolgt',
-                    'Methodenvielfalt wird gegeben',
-                    'Lehrerzentrierte Phasen werden integriert',
-                    'Selbstorganisation wird gefördert',
-                    'Kooperation wird ermöglicht',
-                    'Unterschiedliche Zugänge zu Inhalten werden angeboten',
-                    'Verschiedene Aufgabenformate werden verwendet',
-                    'Interaktive Formate werden eingesetzt',
-                    'Kollaborative Szenarien werden genutzt',
-                    'Kreative Aufgaben werden gestellt',
-                    'Vertiefte Auseinandersetzung wird ermöglicht',
-                    'Erstellung von Ergebnissen wird gefördert',
-                    'Aktive Beteiligung wird erreicht',
-                    'Vielfältiges Angebot an Lernszenarien wird präsentiert',
-                    'Lernszenarien werden abwechslungsreich gestaltet',
-                    'Methodenwechsel wird erkennbar',
-                    'Angemessene Variation der Methoden erfolgt',
-                    'Erweiterung des didaktisch-methodischen Repertoires wird durch digitale Medien erreicht',
-                    'Aktive Beteiligung durch interaktive Formate wird gefördert',
-                    'Einbindung der Schülerinnen und Schüler in vertiefte Auseinandersetzung erfolgt'
+                    // Base: Interaktive Formate
+                    'Interaktive Formate werden nicht genutzt',
+                    'Interaktive Formate werden teilweise genutzt',
+                    'Interaktive Formate werden genutzt',
+                    // Base: Aktive Beteiligung
+                    'Aktive Beteiligung wird nicht erreicht',
+                    'Aktive Beteiligung wird teilweise erreicht',
+                    'Aktive Beteiligung wird erreicht'
                 ]
             },
             '3.2': {
                 titel: 'Interaktive Formate',
                 tags: [
-                    'Interaktive Elemente werden vorhanden gehalten',
+                    // Base: Gamification anwenden
+                    'Gamification-Ansätze werden nicht angewendet',
+                    'Gamification-Ansätze werden teilweise angewendet',
                     'Gamification-Ansätze werden angewendet',
-                    'Motivierende Auseinandersetzung wird ermöglicht',
-                    'Spielerische Elemente werden integriert',
+                    // Base: Interaktive Aufgaben
+                    'Interaktive Aufgaben werden nicht gestellt',
+                    'Interaktive Aufgaben werden teilweise gestellt',
                     'Interaktive Aufgaben werden gestellt',
-                    'Kollaborative Formate werden genutzt',
-                    'Kreative Aufgabenstellungen werden angeboten',
-                    'Engagement wird gefördert',
-                    'Aktivierende Methoden werden eingesetzt',
-                    'Teilnahme wird gestärkt',
-                    'Beteiligung ist hoch',
-                    'Interesse wird aufrechterhalten',
-                    'Konzentration bleibt erhalten',
-                    'Motivation wird erkennbar',
-                    'Spaß am Lernen wird geschaffen',
-                    'Herausforderung wird angemessen gestaltet',
-                    'Erfolgserlebnisse werden möglich gemacht',
-                    'Feedback wird integriert',
-                    'Fortschritt wird sichtbar gemacht',
-                    'Belohnung wird vorhanden gehalten',
-                    'Motivierende Auseinandersetzung durch interaktive Elemente und Gamification erfolgt',
-                    'Variation der Lernaktivitäten steigert Motivation',
-                    'Abwechslungsreicher Medieneinsatz wird genutzt'
+                    // Base: Motivation steigert
+                    'Motivation wird nicht gesteigert',
+                    'Motivation wird teilweise gesteigert',
+                    'Motivation wird gesteigert',
+                    // Base: Beteiligung hochhalten
+                    'Beteiligung ist nicht hoch',
+                    'Beteiligung ist teilweise hoch',
+                    'Beteiligung ist hoch'
                 ]
             },
             '3.3': {
                 titel: 'Rhythmisierung',
                 tags: [
-                    'Wechsel der Lernaktivitäten wird geplannt',
-                    'Abwechslungsreiches Angebot wird geschaffen',
-                    'Rhythmisierung wird erkennbar',
+                    // Base: Wechsel der Aktivitäten
+                    'Wechsel der Lernaktivitäten wird nicht geplant',
+                    'Wechsel der Lernaktivitäten wird teilweise geplant',
+                    'Wechsel der Lernaktivitäten wird geplant',
+                    // Base: Konzentration aufrechterhalten
+                    'Konzentration wird nicht aufrechterhalten',
+                    'Konzentration wird teilweise aufrechterhalten',
                     'Konzentration wird aufrechterhalten',
-                    'Verschiedene Aufgabenformate werden gewechselt',
-                    'Phasenwechsel wird strukturiert',
-                    'Tempovariation wird vorhanden',
-                    'Aktivitätswechsel wird geplant',
-                    'Methodenwechsel wird sinnvoll eingesetzt',
-                    'Sozialformenwechsel wird durchgeführt',
-                    'Abwechslung wird gegeben',
+                    // Base: Monotonie vermeiden
+                    'Monotonie wird nicht vermieden',
+                    'Monotonie wird teilweise vermieden',
                     'Monotonie wird vermieden',
-                    'Dynamik im Unterricht wird geschaffen',
-                    'Spannung wird aufrechterhalten',
-                    'Ermüdung wird vermieden',
-                    'Aufmerksamkeit wird gesteuert',
-                    'Pausen werden eingeplant',
-                    'Intensitätswechsel wird genutzt',
-                    'Balance wird vorhanden gehalten',
-                    'Timing wird angemessen',
-                    'Rhythmisierung des Unterrichts durch Wechsel zwischen Aufgabenformaten erfolgt',
-                    'Abwechslungsreiches Angebot an Lernszenarien wird geschaffen',
-                    'Variation der Methoden hält Konzentration aufrecht'
+                    // Base: Aufmerksamkeit steuern
+                    'Aufmerksamkeit wird nicht gesteuert',
+                    'Aufmerksamkeit wird teilweise gesteuert',
+                    'Aufmerksamkeit wird gesteuert'
                 ]
             },
             '3.4': {
                 titel: 'Analog-digital Verschränkung',
                 tags: [
+                    // Base: Analoge Settings anreichern
+                    'Analoge Settings werden nicht angereichert',
+                    'Analoge Settings werden teilweise angereichert',
                     'Analoge Settings werden angereichert',
-                    'Digitale und analoge Verschränkung wird realisiert',
-                    'Diskussionsrunden werden mit digitaler Unterstützung ergänzt',
-                    'Kooperative Arbeitsprozesse werden ermöglicht',
-                    'Kooperation wird auch über Unterricht hinaus gefördert',
-                    'Zusätzliche Gestaltungsmöglichkeiten werden genutzt',
-                    'Über analoge Möglichkeiten hinausgehende Ansätze werden eingesetzt',
-                    'Ergänzung analoger Methoden erfolgt',
-                    'Peer-Feedback wird digital und analog gegeben',
-                    'Digitale Werkzeuge werden für Feedback genutzt',
-                    'Persönliches Gespräch wird mit analogen Hilfsmitteln geführt',
-                    'Präsentation von Lernprodukten wird ermöglicht',
-                    'Asynchrones Feedback wird als Teil des Prozesses integriert',
-                    'Zugriff auf Lernressourcen wird schnellen ermöglicht',
-                    'Materialvielfalt wird genutzt',
-                    'Kombinierte Ansätze werden angewendet',
-                    'Hybride Lernformen werden gestaltet',
-                    'Medienintegration wird gelungen',
-                    'Sinnvolle Verknüpfung analoger und digitaler Settings erfolgt',
-                    'Kooperative Prozesse werden über den Unterricht hinaus unterstützt',
-                    'Schneller Zugriff auf Lernmaterialien reichert analoge Settings an',
-                    'Peer-Feedback wird durch kollaborative Werkzeuge ermöglicht',
-                    'Gegenseitige Präsentation von Produkten wird gefördert'
+                    // Base: Kooperation fördern
+                    'Kooperation wird nicht gefördert',
+                    'Kooperation wird teilweise gefördert',
+                    'Kooperation wird gefördert',
+                    // Base: Feedback geben
+                    'Peer-Feedback wird nicht gegeben',
+                    'Peer-Feedback wird teilweise gegeben',
+                    'Peer-Feedback wird gegeben',
+                    // Base: Ressourcen zugänglich
+                    'Zugriff auf Ressourcen wird nicht ermöglicht',
+                    'Zugriff auf Ressourcen wird teilweise ermöglicht',
+                    'Zugriff auf Ressourcen wird ermöglicht'
                 ]
             }
         }
@@ -464,113 +397,85 @@ const kategorien = {
             '4.1': {
                 titel: 'Lernstandserfassung',
                 tags: [
-                    'Tests werden mit automatischer Auswertung durchgeführt',
-                    'Unmittelbares Feedback wird ermöglicht',
+                    // Base: Tests auswerten
+                    'Tests werden nicht automatisch ausgewertet',
+                    'Tests werden teilweise automatisch ausgewertet',
+                    'Tests werden automatisch ausgewertet',
+                    // Base: Fortschritt verfolgen
+                    'Lernfortschritt wird nicht verfolgt',
+                    'Lernfortschritt wird teilweise verfolgt',
                     'Lernfortschritt wird verfolgt',
-                    'Aufgaben werden eingereicht',
-                    'Zwischenergebnisse werden sichtbar gemacht',
+                    // Base: Kompetenz erfasst
+                    'Kompetenzstand wird nicht erfasst',
+                    'Kompetenzstand wird teilweise erfasst',
                     'Kompetenzstand wird erfasst',
-                    'Systematische Erfassung wird durchgeführt',
-                    'Wiederholte Messungen werden zu verschiedenen Zeitpunkten vorgenommen',
-                    'Lernfortschritt wird sichtbar gemacht',
-                    'Individuelle Entwicklung wird erkennbar',
-                    'Diagnostik wird vorhanden gehalten',
-                    'Lernstand wird bekannt gemacht',
-                    'Datenbasierte Entscheidungen werden getroffen',
-                    'Regelmäßige Überprüfung wird durchgeführt',
-                    'Dokumentation des Fortschritts wird erstellt',
-                    'Transparenz über Leistung wird gegeben',
-                    'Selbsteinschätzung wird möglich gemacht',
-                    'Vergleich über Zeit wird ermöglicht',
-                    'Entwicklung wird nachvollziehbar',
-                    'Effektive Nachverfolgung des individuellen Fortschritts erfolgt',
-                    'Systematische Erfassung des Kompetenzstandes wird wiederholt durchgeführt',
-                    'Automatische Auswertung von Tests ermöglicht unmittelbares Feedback',
-                    'Einreichung von Aufgaben und Ergebnissen wird genutzt'
+                    // Base: Individuelle Entwicklung
+                    'Individuelle Entwicklung wird nicht erkennbar',
+                    'Individuelle Entwicklung wird teilweise erkennbar',
+                    'Individuelle Entwicklung wird erkennbar'
                 ]
             },
             '4.2': {
                 titel: 'Differenzierte Aufgaben',
                 tags: [
+                    // Base: Anspruch anpassen
+                    'Anspruchsniveau wird nicht angepasst',
+                    'Anspruchsniveau wird teilweise angepasst',
                     'Anspruchsniveau wird angepasst',
-                    'Interessen werden berücksichtigt',
+                    // Base: Lernzugänge anbieten
+                    'Verschiedene Lernzugänge werden nicht angeboten',
+                    'Verschiedene Lernzugänge werden teilweise angeboten',
                     'Verschiedene Lernzugänge werden angeboten',
-                    'Bearbeitungsweisen werden variiert',
-                    'Individuelle Lernvoraussetzungen werden beachtet',
-                    'Kooperative Lernformen werden gefördert',
-                    'Differenzierte Aufgabengestaltung wird durchgeführt',
-                    'Unterschiedliche Schwierigkeitsgrade werden angeboten',
-                    'Wahlmöglichkeiten werden gegeben',
-                    'Verschiedene Wege zum Ziel werden ermöglicht',
-                    'Individuelle Förderung wird realisiert',
-                    'Herausforderung wird angemessen gestaltet',
-                    'Überforderung wird vermieden',
-                    'Unterforderung wird vermieden',
-                    'Passende Aufgaben werden gestellt',
-                    'Lernniveau wird berücksichtigt',
-                    'Heterogenität wird beachtet',
-                    'Individuelle Stärken werden genutzt',
-                    'Persönliche Zugänge werden ermöglicht',
-                    'Vielfalt der Ansätze wird gegeben',
-                    'Differenzierte Aufgabengestaltung berücksichtigt Voraussetzungen',
-                    'Anpassung des Anspruchsniveaus erfolgt individuell',
-                    'Kooperative Formen werden gezielt gefördert'
+                    // Base: Individuelle Voraussetzungen beachten
+                    'Individuelle Voraussetzungen werden nicht beachtet',
+                    'Individuelle Voraussetzungen werden teilweise beachtet',
+                    'Individuelle Voraussetzungen werden beachtet',
+                    // Base: Über-/Unterforderung vermeiden
+                    'Über- und Unterforderung wird nicht vermieden',
+                    'Über- und Unterforderung wird teilweise vermieden',
+                    'Über- und Unterforderung wird vermieden'
                 ]
             },
             '4.3': {
                 titel: 'Feedback & Unterstützung',
                 tags: [
-                    'Vielfältige Unterstützung wird vorhanden gehalten',
-                    'Unterstützung bei Aufgaben wird bereitgestellt',
-                    'Unkomplizierte Abgabe wird möglich gemacht',
-                    'Zwischenstände werden eingereicht',
+                    // Base: Feedback geben
+                    'Zeitnahes Feedback wird nicht gegeben',
+                    'Zeitnahes Feedback wird teilweise gegeben',
                     'Zeitnahes Feedback wird gegeben',
-                    'Individuelles Feedback wird erteilt',
-                    'Lernprozess wird begleitet',
-                    'Effektive Begleitung wird gewährleistet',
+                    // Base: Unterstützung bereitstellen
+                    'Unterstützung bei Aufgaben wird nicht bereitgestellt',
+                    'Unterstützung bei Aufgaben wird teilweise bereitgestellt',
+                    'Unterstützung bei Aufgaben wird bereitgestellt',
+                    // Base: Automatisiertes Feedback
+                    'Automatisiertes Feedback wird nicht integriert',
+                    'Automatisiertes Feedback wird teilweise integriert',
                     'Automatisiertes Feedback wird integriert',
-                    'Übungen mit Rückmeldung werden angeboten',
-                    'Individuelle Förderung wird durchgeführt',
-                    'Kollaborative Werkzeuge werden genutzt',
-                    'Direkter Austausch wird ermöglicht',
-                    'Gegenseitige Kommentare werden gegeben',
-                    'Bewertungen untereinander werden ermöglicht',
-                    'Neue Kommunikationswege werden geschaffen',
-                    'Begleitung wird über Unterricht hinaus erweitert',
-                    'Erreichbarkeit wird gegeben',
-                    'Hilfe wird verfügbar gehalten',
-                    'Unterstützung wird angenommen',
-                    'Vielfältige Unterstützungsmöglichkeiten werden bei der Bearbeitung bereitgestellt',
-                    'Unkomplizierte Abgabe von Zwischenständen ermöglicht zeitnahes Feedback',
-                    'Individuelle Förderung durch Übungen mit automatisiertem Feedback erfolgt'
+                    // Base: Begleitung erweitern
+                    'Begleitung wird nicht erweitert',
+                    'Begleitung wird teilweise erweitert',
+                    'Begleitung wird erweitert'
                 ]
             },
             '4.4': {
                 titel: 'Selbststeuerung',
                 tags: [
-                    'Individuelle Lernvoraussetzungen werden berücksichtigt',
-                    'Wahlfreiheit wird gegeben',
+                    // Base: Autonomie einräumen
+                    'Autonomie wird nicht eingeräumt',
+                    'Autonomie wird teilweise eingeräumt',
                     'Autonomie wird eingeräumt',
-                    'Selbstbestimmung wird möglich gemacht',
-                    'Klar strukturiertes Lernangebot wird bereitgestellt',
-                    'Didaktisch aufbereitetes Angebot wird genutzt',
+                    // Base: Lernangebot strukturieren
+                    'Strukturiertes Lernangebot wird nicht bereitgestellt',
+                    'Strukturiertes Lernangebot wird teilweise bereitgestellt',
+                    'Strukturiertes Lernangebot wird bereitgestellt',
+                    // Base: Selbstgesteuertes Lernen fördern
+                    'Selbstgesteuertes Lernen wird nicht gefördert',
+                    'Selbstgesteuertes Lernen wird teilweise gefördert',
                     'Selbstgesteuertes Lernen wird gefördert',
-                    'Projekte ermöglichen Autonomie',
-                    'Podcasts werden erstellt',
-                    'Blogs werden geschrieben',
-                    'Erklärvideos werden produziert',
-                    'Digitale Arbeitshilfen werden zugänglich gemacht',
-                    'Einfacher Zugang zu Tools wird gegeben',
-                    'Eigenverantwortliches Lernen wird gefördert',
-                    'Individuelle Zielverfolgung wird unterstützt',
-                    'Selbstorganisation wird gefördert',
-                    'Eigene Lernwege werden ermöglicht',
-                    'Tempo wird selbst bestimmt',
-                    'Entscheidungen werden getroffen',
-                    'Verantwortung wird übernommen',
-                    'Unterrichtsgestaltung berücksichtigt individuelle Voraussetzungen',
-                    'Wahlfreiheit und Autonomie werden bis zu einem gewissen Maß eingeräumt',
-                    'Selbstgesteuertes Lernen in Projekten wird durch digitale Formate gefördert'
+                    // Base: Zielverfolgung unterstützen
+                    'Individuelle Zielverfolgung wird nicht unterstützt',
+                    'Individuelle Zielverfolgung wird teilweise unterstützt',
+                    'Individuelle Zielverfolgung wird unterstützt'
                 ]
             }
         }
@@ -583,126 +488,97 @@ const kategorien = {
             '5.1': {
                 titel: 'Lernprodukte erstellen',
                 tags: [
-                    'Aktive Auseinandersetzung mit Lerninhalten wird durch kollaborative Erstellung gefördert',
-                    'Kreative Lernprodukte wie Präsentationen werden erstellt',
-                    'Comics werden als Lernprodukt genutzt',
-                    'Erklärvideos werden produziert',
-                    'Podcasts werden kollaborativ erstellt',
-                    'Flexible Erstellung von Medienprodukten wird zeit- und ortsunabhängig ermöglicht',
-                    'Zeitunabhängige Bearbeitung von Produkten erfolgt',
-                    'Ortsunabhängige Erstellung wird genutzt',
-                    'Einfache Überarbeitung der Lernprodukte wird ermöglicht',
-                    'Erhaltenes Feedback wird eingearbeitet',
-                    'Feedback wird als Teil des Lernprozesses verstanden',
-                    'Medienproduktive Aufgabenformate werden eingesetzt',
-                    'Kollaborative Erstellung kreativer Produkte wird gefördert',
-                    'Produktorientierte Lernszenarien werden genutzt',
-                    'Aktive Arbeit mit digitalen Medien wird ermöglicht',
-                    'Kreative Auseinandersetzung mit Lerngegenstand erfolgt',
-                    'Langefristiger Kompetenzaufbau wird unterstützt',
-                    'Eigene Lösungswege werden gefunden',
-                    'Eigene Lernprodukte werden erstellt',
-                    'Entstehungsprozess von Produkten wird reflektiert',
-                    'Präsentationen werden kollaborativ erstellt',
-                    'Comics fördern kreative Auseinandersetzung',
-                    'Erklärvideos ermöglichen aktive Beteiligung'
+                    // Base: Kreative Produkte erstellen
+                    'Kreative Lernprodukte werden nicht erstellt',
+                    'Kreative Lernprodukte werden teilweise erstellt',
+                    'Kreative Lernprodukte werden erstellt',
+                    // Base: Feedback einarbeiten
+                    'Feedback wird nicht eingearbeitet',
+                    'Feedback wird teilweise eingearbeitet',
+                    'Feedback wird eingearbeitet',
+                    // Base: Flexible Erstellung
+                    'Flexible Erstellung von Produkten wird nicht ermöglicht',
+                    'Flexible Erstellung von Produkten wird teilweise ermöglicht',
+                    'Flexible Erstellung von Produkten wird ermöglicht',
+                    // Base: Reflexion des Prozesses
+                    'Entstehungsprozess wird nicht reflektiert',
+                    'Entstehungsprozess wird teilweise reflektiert',
+                    'Entstehungsprozess wird reflektiert'
                 ]
             },
             '5.2': {
                 titel: 'Lernstrategien vermitteln',
                 tags: [
-                    'Strategien zur Arbeitsorganisation werden einübt',
-                    'Lernorganisation wird reflektiert',
-                    'Strategien werden einübt',
+                    // Base: Strategien einüben
+                    'Lernstrategien werden nicht eingeübt',
+                    'Lernstrategien werden teilweise eingeübt',
+                    'Lernstrategien werden eingeübt',
+                    // Base: Wissenserwerb fördern
+                    'Nachhaltiger Wissenserwerb wird nicht gefördert',
+                    'Nachhaltiger Wissenserwerb wird teilweise gefördert',
                     'Nachhaltiger Wissenserwerb wird gefördert',
-                    'Reflexion von Strategien erfolgt',
-                    'Eigene Medienanwendung wird kritisch reflektiert',
+                    // Base: Medien zielgerichtet einsetzen
+                    'Medien werden nicht zielgerichtet eingesetzt',
+                    'Medien werden teilweise zielgerichtet eingesetzt',
                     'Medien werden zielgerichtet eingesetzt',
-                    'Sozial verantwortlicher Einsatz von Medien wird gelehrt',
-                    'Gewinnbringender Medieneinsatz wird vermittelt',
-                    'Fachintegrativer systematischer Medienkompetenzaufbau wird durchgeführt',
-                    'Regelmäßige Nutzung von Medien erfolgt',
-                    'Reflektierte Nutzung wird gefördert',
-                    'Lernstrategien werden als Inhalt und Methode vermittelt',
-                    'Problemlösungsfähigkeiten werden aufgebaut',
-                    'Tief verarbeitetes Wissen wird vorausgesetzt',
-                    'Neue Inhalte werden in Wissensstrukturen eingebaut',
-                    'Wissen wird vielfältig vernetzt',
-                    'Anwendung in unterschiedlichen Situationen wird geübt',
-                    'Lernwege werden durch medienproduktive Formate eröffnet',
-                    'Kreative Auseinandersetzung wird ermöglicht',
-                    'Strategien zur Arbeitsorganisation werden reflektiert',
-                    'Nachhaltiger Wissenserwerb wird durch Einüben strategischer Ansätze gefördert',
-                    'Kritische Reflexion der Medienanwendung erfolgt regelmäßig',
-                    'Aufgaben fordern Denken heraus',
-                    'Vorwissen wird aktiviert und mit Neuem verknüpft.'
+                    // Base: Problemlösung aufbauen
+                    'Problemlösungsfähigkeiten werden nicht aufgebaut',
+                    'Problemlösungsfähigkeiten werden teilweise aufgebaut',
+                    'Problemlösungsfähigkeiten werden aufgebaut'
                 ]
             },
             '5.3': {
                 titel: 'Medienkompetenz aufbauen',
                 tags: [
-                    'Einüben von Strategien zur Lernorganisation erfolgt',
-                    'Reflektieren von Strategien wird gefördert',
-                    'Nachhaltiger Wissenserwerb wird unterstützt',
-                    'Eigene Medienanwendung wird kritisch reflektiert',
-                    'Medien werden zielgerichtet eingesetzt',
-                    'Sozial verantwortlich wird mit Medien umgegangen',
-                    'Gewinnbringend werden Medien genutzt',
-                    'Fachintegrativer Medienkompetenzaufbau wird systematisch durchgeführt',
-                    'Regelmäßige und reflektierte Nutzung erfolgt',
-                    'Medienkompetenzen werden neben fachlichen Kenntnissen erworben',
-                    'Aktive und kreative Auseinandersetzung wird gefördert',
-                    'Produktorientierte Szenarien werden genutzt',
-                    'Medienproduktive Formate zielen auf Kompetenzen ab',
-                    'Grundlegende Kompetenzen werden erworben',
-                    'Fachliche Kompetenzen werden aufgebaut',
-                    'Überfachliche Kompetenzen werden entwickelt',
-                    'Langfristiger Kompetenzaufbau wird ermöglicht',
-                    'Systematischer Erwerb von Medienkompetenz erfolgt',
-                    'Strategien werden reflektiert und eingeübt',
-                    'Zielgerichteter, sozial verantwortlicher Medieneinsatz wird gelehrt',
-                    'Fachintegrativer Aufbau durch regelmäßige Nutzung wird realisiert',
-                    'Kritische Reflexion der Medienanwendung wird integriert',
-                    'Gewinnbringender Einsatz aller Medienarten wird vermittelt'
+                    // Base: Kompetenzen erwerben
+                    'Medienkompetenzen werden nicht erworben',
+                    'Medienkompetenzen werden teilweise erworben',
+                    'Medienkompetenzen werden erworben',
+                    // Base: Reflektierte Nutzung
+                    'Reflektierte Nutzung wird nicht gefördert',
+                    'Reflektierte Nutzung wird teilweise gefördert',
+                    'Reflektierte Nutzung wird gefördert',
+                    // Base: Aktive Auseinandersetzung
+                    'Aktive Auseinandersetzung wird nicht gefördert',
+                    'Aktive Auseinandersetzung wird teilweise gefördert',
+                    'Aktive Auseinandersetzung wird gefördert',
+                    // Base: Langfristiger Aufbau
+                    'Langfristiger Kompetenzaufbau wird nicht ermöglicht',
+                    'Langfristiger Kompetenzaufbau wird teilweise ermöglicht',
+                    'Langfristiger Kompetenzaufbau wird ermöglicht'
                 ]
             },
             '5.4': {
                 titel: 'Differenzierte Übungen',
                 tags: [
-                    'Sofortige Überprüfung von Antworten wird ermöglicht',
-                    'Direktes Feedback wird gegeben',
-                    'Zugang zu differenzierten Übungsaufgaben wird bereitgestellt',
-                    'KI-generierte Aufgaben werden genutzt',
-                    'Lernprozess wird nach individuellen Voraussetzungen gestaltet',
-                    'Eigenes Tempo wird ermöglicht',
-                    'Entsprechende Wiederholungen werden angeboten',
-                    'Gelernte wird mit vorhandenem Wissen vernetzt',
-                    'Anwendung in neuen Kontexten wird geübt',
-                    'Vielfältige Übungsmöglichkeiten werden eröffnet',
-                    'Erlernte wird gezielt wiederholt',
-                    'Nachhaltige Verankerung wird unterstützt',
-                    'Intelligentes Üben wird durch digitale Möglichkeiten gefördert',
+                    // Base: Differenzierte Übungen
+                    'Differenzierte Übungsaufgaben werden nicht angeboten',
+                    'Differenzierte Übungsaufgaben werden teilweise angeboten',
                     'Differenzierte Übungsaufgaben werden angeboten',
-                    'Individuelles Tempo wird respektiert',
-                    'Wiederholungen werden bedarfsgerecht eingesetzt',
-                    'Wissenserwerb wird nachhaltig verankert',
-                    'Anwendungsfähigkeit wird in Übungsphasen geübt',
-                    'Digitale Formate fördern aktive Auseinandersetzung',
-                    'Kreative Mediennutzung wird in Übungen integriert',
-                    'Direktes Feedback durch sofortige Überprüfung wird genutzt',
-                    'Vielzahl differenzierter Übungsaufgaben ermöglicht individuelle Gestaltung',
-                    'Vernetzung des Gelernten mit neuem Wissen erfolgt in Kontexten'
+                    // Base: Feedback in Übungen
+                    'Direktes Feedback wird nicht gegeben',
+                    'Direktes Feedback wird teilweise gegeben',
+                    'Direktes Feedback wird gegeben',
+                    // Base: Individuelle Gestaltung
+                    'Lernprozess wird nicht individuell gestaltet',
+                    'Lernprozess wird teilweise individuell gestaltet',
+                    'Lernprozess wird individuell gestaltet',
+                    // Base: Nachhaltige Verankerung
+                    'Nachhaltige Verankerung wird nicht unterstützt',
+                    'Nachhaltige Verankerung wird teilweise unterstützt',
+                    'Nachhaltige Verankerung wird unterstützt'
                 ]
             }
         }
     }
 };
 const bewertungsSkala = [
-    { wert: 0, label: 'nicht beobachtbar/beobachtet', farbe: 'bg-gray-300' },
-    { wert: 1, label: 'trifft nicht zu', farbe: 'bg-red-300' },
-    { wert: 2, label: 'trifft eher nicht zu', farbe: 'bg-orange-300' },
-    { wert: 3, label: 'trifft eher zu', farbe: 'bg-yellow-300' },
-    { wert: 4, label: 'trifft zu', farbe: 'bg-green-300' }
+    { wert: "nicht beobachtbar", label: 'nicht beobachtbar', farbe: 'bg-gray-300' },
+    { wert: 0, label: 'nicht erkennbar', farbe: 'bg-gray-300' },
+    { wert: 1, label: 'im Ansatz erkennbar', farbe: 'bg-red-300' },
+    { wert: 2, label: 'teilweise erkennbar', farbe: 'bg-orange-300' },
+    { wert: 3, label: 'weitgehend erkennbar', farbe: 'bg-yellow-300' },
+    { wert: 4, label: 'voll ausgeprägt', farbe: 'bg-green-300' }
 ];
 const sozialformen = ['Plenum', 'Lehrervortrag', 'Einzelarbeit', 'Partnerarbeit', 'Gruppenarbeit', 'Freie Wahl', 'Leerlauf', 'Andere'];
 
@@ -713,19 +589,51 @@ let bewertungen = {};
 let quillEditor = null;
 
 // Local Storage Funktionen
-function saveSessionsToStorage() {
-    localStorage.setItem('hospitationSessions', JSON.stringify(sessions));
+async function saveSessionsToStorage() {
+    try {
+        const db = await openDB();
+        const transaction = db.transaction([STORE_NAME], 'readwrite');
+        const store = transaction.objectStore(STORE_NAME);
+
+        // Lösche alle vorhandenen Sessions
+        const clearRequest = store.clear();
+        await new Promise((resolve, reject) => {
+            clearRequest.onsuccess = () => resolve();
+            clearRequest.onerror = () => reject('Fehler beim Löschen der Sessions');
+        });
+
+        // Speichere alle aktuellen Sessions
+        for (const session of sessions) {
+            const request = store.put(session);
+            await new Promise((resolve, reject) => {
+                request.onsuccess = () => resolve();
+                request.onerror = () => reject('Fehler beim Speichern der Session');
+            });
+        }
+
+        db.close();
+    } catch (error) {
+        console.error('Fehler beim Speichern in IndexedDB:', error);
+    }
 }
 
-function loadSessionsFromStorage() {
-    const stored = localStorage.getItem('hospitationSessions');
-    if (stored) {
-        try {
-            sessions = JSON.parse(stored);
-        } catch (e) {
-            console.error('Fehler beim Laden der Sessions:', e);
-            sessions = [];
-        }
+async function loadSessionsFromStorage() {
+    try {
+        const db = await openDB();
+        const transaction = db.transaction([STORE_NAME], 'readonly');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.getAll();
+
+        const result = await new Promise((resolve, reject) => {
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = () => reject('Fehler beim Laden der Sessions');
+        });
+
+        sessions = result || [];
+        db.close();
+    } catch (error) {
+        console.error('Fehler beim Laden aus IndexedDB:', error);
+        sessions = [];
     }
 }
 
@@ -734,7 +642,7 @@ function initBewertungen() {
     bewertungen = {};
     Object.keys(kategorien).forEach(kat => {
         Object.keys(kategorien[kat].unterkategorien).forEach(uk => {
-            bewertungen[uk] = { bewertung: 0, notizen: '', tags: [] };
+            bewertungen[uk] = { bewertung: null, notizen: '', tags: [] };
         });
     });
 }
@@ -753,9 +661,9 @@ function validateForm() {
 }
 
 // Initialisierung
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async function () {
     initBewertungen();
-    initApp();
+    await initApp();
     initImageModal();
 });
 
@@ -788,10 +696,10 @@ function initImageModal() {
     });
 }
 
-function initApp() {
-    loadSessionsFromStorage(); // Sessions aus Local Storage laden
+async function initApp() {
+    await loadSessionsFromStorage(); // Sessions aus IndexedDB laden
 
-    // Quill Editor initialisieren (mit Sanitization)
+    // Rest des bestehenden Codes bleibt unverändert
     quillEditor = new Quill('#general-notes-editor', {
         theme: 'snow',
         placeholder: 'Allgemeine Beobachtungen notieren...',
@@ -802,12 +710,12 @@ function initApp() {
                 [{ 'list': 'ordered' }, { 'list': 'bullet' }],
                 [{ 'header': [1, 2, 3, false] }],
                 [{ 'color': [] }, { 'background': [] }],
-                ['clean'] // Baut gefährliche HTML auf
+                ['clean']
             ]
         }
     });
     quillEditor.on('text-change', function () {
-        formData.generalNotes = quillEditor.root.innerHTML; // Quill saniert intern
+        formData.generalNotes = quillEditor.root.innerHTML;
     });
     if (formData.generalNotes) {
         quillEditor.root.innerHTML = formData.generalNotes;
@@ -852,7 +760,7 @@ function initApp() {
 
     ['name', 'klasse', 'fach', 'thema', 'datum'].forEach(id => {
         document.getElementById(id).addEventListener('input', (e) => {
-            formData[id] = escapeHtml(e.target.value.trim()); // Escapen für Sicherheit
+            formData[id] = escapeHtml(e.target.value.trim());
         });
     });
 
@@ -1081,8 +989,7 @@ function renderKategorien() {
                     </div>
                     <div class="unterkategorien">
                         ${Object.entries(kat.unterkategorien).map(([ukKey, ukData]) => {
-            const initialWert = bewertungen[ukKey]?.bewertung || 0;
-            const initialLabel = bewertungsSkala[initialWert];
+            const initialWert = bewertungen[ukKey]?.bewertung ?? "nicht beobachtbar";
             const escapedTitel = escapeHtml(ukData.titel);
             return `
                                 <div class="uk">
@@ -1091,14 +998,17 @@ function renderKategorien() {
                                         <div class="mb-2">
                                             <span class="text-sm font-medium block mb-2">Bewertung:</span>
                                             <div class="rating-buttons" data-rating-buttons="${ukKey}">
-                                                ${bewertungsSkala.map(skala => `
-                                                    <button type="button" 
-                                                        data-uk="${ukKey}" 
-                                                        data-wert="${skala.wert}"
-                                                        class="rating-button ${initialWert === skala.wert ? skala.farbe + ' active' : ''}">
-                                                        ${escapeHtml(skala.label)}
-                                                    </button>
-                                                `).join('')}
+                                                ${bewertungsSkala.map(skala => {
+                                                    const isActive = initialWert === skala.wert;
+                                                    return `
+                                                        <button type="button" 
+                                                            data-uk="${ukKey}" 
+                                                            data-wert="${skala.wert}"
+                                                            class="rating-button ${isActive ? skala.farbe + ' active' : ''}">
+                                                            ${escapeHtml(skala.label)}
+                                                        </button>
+                                                    `;
+                                                }).join('')}
                                             </div>
                                         </div>
                                     </div>
@@ -1148,25 +1058,38 @@ function renderKategorien() {
 
     // Event Delegation für Rating Buttons
     container.addEventListener('click', (e) => {
-        if (e.target.classList.contains('rating-button')) {
-            const ukKey = e.target.getAttribute('data-uk');
-            const wert = Number(e.target.getAttribute('data-wert'));
-
-            bewertungen[ukKey].bewertung = wert;
-
-            // Update button styles
-            const buttonsContainer = e.target.closest('[data-rating-buttons]');
-            buttonsContainer.querySelectorAll('.rating-button').forEach(btn => {
-                const btnWert = Number(btn.getAttribute('data-wert'));
-                const skala = bewertungsSkala[btnWert];
-                if (btnWert === wert) {
-                    btn.className = `rating-button ${skala.farbe} active`;
-                } else {
-                    btn.className = 'rating-button';
-                }
-            });
+    if (e.target.classList.contains('rating-button')) {
+        const ukKey = e.target.getAttribute('data-uk');
+        const wertStr = e.target.getAttribute('data-wert');
+        
+        let wert;
+        if (wertStr === 'nicht beobachtbar') {
+            wert = null;  // Speziell für "nicht beobachtbar"
+        } else {
+            wert = Number(wertStr);
         }
-    });
+
+        bewertungen[ukKey].bewertung = wert;
+
+        // Update button styles
+        const buttonsContainer = e.target.closest('[data-rating-buttons]');
+        buttonsContainer.querySelectorAll('.rating-button').forEach(btn => {
+            const btnWertStr = btn.getAttribute('data-wert');
+            let btnWert;
+            if (btnWertStr === 'nicht beobachtbar') {
+                btnWert = null;
+            } else {
+                btnWert = Number(btnWertStr);
+            }
+            const skala = bewertungsSkala.find(s => s.wert === btnWertStr || s.wert === btnWert);
+            if ((wertStr === 'nicht beobachtbar' && btnWertStr === 'nicht beobachtbar') || (btnWert === wert)) {
+                btn.className = `rating-button ${skala?.farbe || 'bg-gray-300'} active`;
+            } else {
+                btn.className = 'rating-button';
+            }
+        });
+    }
+});
 
     // Event Delegation für Notizen
     container.addEventListener('input', (e) => {
@@ -1188,7 +1111,7 @@ window.addCustomTag = function (ukKey) {
 
 function handlePhotoUpload(e) {
     const files = Array.from(e.target.files);
-    const maxSize = 5 * 1024 * 1024; // 5MB
+    const maxSize = 50 * 1024 * 1024; // 50MB
     files.forEach(file => {
         if (!file.type.startsWith('image/')) {
             alert('Nur Bilddateien erlaubt!');
@@ -1229,7 +1152,7 @@ window.removePhoto = function (index) {
     renderPhotosPreview();
 };
 
-function saveSession() {
+async function saveSession() {
     if (!validateForm()) return;
 
     const session = {
@@ -1247,7 +1170,7 @@ function saveSession() {
     }
 
     currentSessionId = session.id;
-    saveSessionsToStorage(); // In Local Storage speichern
+    await saveSessionsToStorage(); // Asynchron speichern
     renderSessions();
     document.getElementById('session-select').value = currentSessionId;
     document.getElementById('delete-session').style.display = 'flex';
@@ -1304,10 +1227,10 @@ function loadSession(sessionId) {
     }
 }
 
-function deleteSession() {
+async function deleteSession() {
     if (confirm('Session wirklich löschen?')) {
         sessions = sessions.filter(s => s.id !== currentSessionId);
-        saveSessionsToStorage(); // In Local Storage speichern
+        await saveSessionsToStorage(); // Asynchron speichern
         currentSessionId = null;
         renderSessions();
         document.getElementById('session-select').value = '';
@@ -1352,10 +1275,7 @@ function importJSON(event) {
         alert('Nur gültige JSON-Dateien erlaubt!');
         return;
     }
-    if (file.size > 1024 * 1024) { // 1MB Limit
-        alert('Datei zu groß! Max. 1MB.');
-        return;
-    }
+
 
     const reader = new FileReader();
     reader.onload = function (e) {
@@ -1391,8 +1311,9 @@ function importJSON(event) {
             initBewertungen();
             Object.keys(data.bewertungen).forEach(uk => {
                 if (bewertungen[uk]) {
+                    const val = data.bewertungen[uk].bewertung;
                     bewertungen[uk] = {
-                        bewertung: Math.max(0, Math.min(4, data.bewertungen[uk].bewertung || 0)),
+                        bewertung: (val === null || val === undefined) ? null : Math.max(0, Math.min(4, val)),
                         notizen: escapeHtml(data.bewertungen[uk].notizen || ''),
                         tags: (data.bewertungen[uk].tags || []).map(t => escapeHtml(t))
                     };
@@ -1437,23 +1358,25 @@ function calculateStats() {
         const unterkategorienKeys = Object.keys(kategorien[kat].unterkategorien);
 
         const alleWerte = [];
+        let fehlendeWerte = 0;
         unterkategorienKeys.forEach(uk => {
-            const wert = bewertungen[uk]?.bewertung;
-            if (wert !== undefined && wert !== null) {
+            let wert = bewertungen[uk]?.bewertung;
+            if (wert === null || wert === undefined) {
+                fehlendeWerte++;
+            } else {
                 alleWerte.push(wert);
             }
         });
 
-        const bewerteteWerte = alleWerte.filter(w => w > 0);
-
-        const sum = bewerteteWerte.reduce((a, b) => a + b, 0);
-        const durchschnitt = bewerteteWerte.length > 0 ? sum / bewerteteWerte.length : 0;
+        const sum = alleWerte.reduce((a, b) => a + b, 0);
+        const durchschnitt = alleWerte.length > 0 ? sum / alleWerte.length : 0;
+        const prozent = ((durchschnitt / 4) * 100).toFixed(0);
 
         stats[kat] = {
-            prozent: bewerteteWerte.length > 0 ? ((durchschnitt / 4) * 100).toFixed(1) : null,
-            anzahl: bewerteteWerte.length,
+            prozent: prozent,
+            anzahl: unterkategorienKeys.length - fehlendeWerte,
             gesamt: unterkategorienKeys.length,
-            nichtBeobachtbar: bewerteteWerte.length === 0
+            nichtBeobachtbar: fehlendeWerte === unterkategorienKeys.length
         };
     });
     return stats;
@@ -1579,9 +1502,9 @@ function renderAuswertung() {
             const div = document.createElement('div');
             div.className = `stat-item ${kategorien[katKey].farbe}`;
 
-            const prozentAnzeige = stat.nichtBeobachtbar
-                ? '<span class="text-gray-500 italic">nicht beobachtbar/beobachtet</span>'
-                : `<div class="text-2xl font-bold">${stat.prozent}%</div>`;
+    const prozentAnzeige = stat.nichtBeobachtbar
+    ? '<span class="text-gray-500 italic">nicht beobachtbar</span>'
+    : `<div class="text-2xl font-bold">${stat.prozent}%</div>`;
 
             div.innerHTML = `
                         <div class="stat-header">
@@ -1608,14 +1531,16 @@ function renderAuswertung() {
             katDiv.className = 'kat-detail';
             katDiv.innerHTML = `<h4 class="font-bold text-lg mb-3">${escapeHtml(kat.titel)}</h4>`;
 
-            Object.entries(kat.unterkategorien).forEach(([ukKey, ukData]) => {
-                const bew = bewertungen[ukKey];
-                if (!bew || bew.bewertung === 0) return;
-                hasContent = true;
-                const ukDiv = document.createElement('div');
-                ukDiv.className = 'uk-detail';
-                const prozent = ((bew.bewertung / 4) * 100).toFixed(0) + '%';
-                const skala = bewertungsSkala[bew.bewertung];
+Object.entries(kat.unterkategorien).forEach(([ukKey, ukData]) => {
+    const bew = bewertungen[ukKey];
+    if (!bew || bew.bewertung === null) return;  // Überspringe, wenn nicht vorhanden oder nicht beobachtbar
+    hasContent = true;
+    const ukDiv = document.createElement('div');
+    ukDiv.className = 'uk-detail';
+    
+    let bewertungNum = bew.bewertung ?? 0;
+    const prozent = (bew.bewertung === null) ? 'nicht beobachtbar' : ((bewertungNum / 4) * 100).toFixed(0) + '%';
+    const skala = (bew.bewertung === null) ? bewertungsSkala[0] : (bewertungsSkala.find(s => s.wert === bew.bewertung) || bewertungsSkala[1]);
 
                 const tagsHTML = bew.tags && bew.tags.length > 0
                     ? `<div class="uk-tags">

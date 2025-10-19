@@ -336,6 +336,7 @@ textarea:invalid {
     font-size: 0.75rem;
     cursor: pointer;
     transition: background 0.2s;
+    height: 35px;
 }
 
 .tag-btn:hover {
@@ -608,6 +609,7 @@ textarea:invalid {
     margin-bottom: 0.25rem;
     padding: 0.25rem;
     border-bottom: 1px solid #e5e7eb;
+    gap: 45px;
 }
 
 .sozialform-distribution {
