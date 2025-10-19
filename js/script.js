@@ -939,14 +939,17 @@ function renderAvailableTags(ukKey) {
 
     const allTags = kategorien[Object.keys(kategorien).find(k => Object.keys(kategorien[k].unterkategorien).includes(ukKey))]?.unterkategorien[ukKey]?.tags || [];
     const selectedTags = bewertungen[ukKey].tags || [];
-    const availableTags = allTags.filter(tag => !selectedTags.includes(tag));
 
-    container.innerHTML = availableTags.map(tag => {
+    container.innerHTML = allTags.map(tag => {
         const escapedTag = escapeHtml(tag);
+        const isSelected = selectedTags.includes(tag);
+        const buttonClass = isSelected ? 'tag-btn disabled' : 'tag-btn';
+        const buttonText = isSelected ? `✓ ${escapedTag}` : `+ ${escapedTag}`;
+        const onclick = isSelected ? '' : `onclick="addTag('${ukKey}', '${escapedTag.replace(/'/g, "\\'")}')"` ;
+        const disabledAttr = isSelected ? 'disabled' : '';
         return `
-                    <button type="button" onclick="addTag('${ukKey}', '${escapedTag.replace(/'/g, "\\'")}')" 
-                        class="tag-btn">
-                        + ${escapedTag}
+                    <button type="button" ${onclick} ${disabledAttr} class="${buttonClass}">
+                        ${buttonText}
                     </button>
                 `;
     }).join('');
