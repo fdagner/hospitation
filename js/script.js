@@ -37,34 +37,63 @@ const kategorien = {
     1: {
         titel: 'Effektive Klassenführung',
         farbe: 'purple',
-        beschreibung: 'Grundlage lernwirksamen Unterrichts durch wenige Störungen, effektive Zeitnutzung und positives Lernklima',
+        beschreibung: 'Grundlage lernwirksamen Unterrichts',
         unterkategorien: {
             '1.1': {
                 titel: 'Störungsprävention',
                 tags: [
+                    // Base: Umgang mit Regeln
                     'Lehrkraft achtet nicht auf die Einhaltung von Regeln',
                     'Lehrkraft achtet teilweise auf die Einhaltung von Regeln',
                     'Lehrkraft achtet auf die Einhaltung von Regeln',
-                    'Lehrkraft etabliert klare Regeln und Konsequenzen'
+                    // Base: Umgang mit Regeln durch Schüler
+                    'Schüler kennen und beachten die vereinbarten Regeln nicht',
+                    'Schüler kennen und beachten die vereinbarten Regeln teilweise',
+                    'Schüler kennen und beachten die vereinbarten Regeln',
+                    // Base: Lehrkraft-Präsenz
+                    'Lehrkraft ist während Lernphasen nicht präsent',
+                    'Lehrkraft ist während Lernphasen teilweise präsent',
+                    'Lehrkraft ist während Lernphasen präsent',
+                    // Base: Störungen minimieren
+                    'Der Unterricht wird durch Störungen beeinträchtigt',
+                    'Der Unterricht wird durch Störungen teilweise beeinträchtigt',
+                    'Der Unterricht wird durch Störungen nicht beeinträchtigt',
                 ]
             },
             '1.2': {
                 titel: 'Effektive Nutzung der Lernzeit',
                 tags: [
+                    // Base: Beschäftigung mit Inhalten
                     'Lernende sind nicht mit Inhalten beschäftigt',
                     'Lernende sind teilweise mit Inhalten beschäftigt',
                     'Lernende sind durchgängig mit Inhalten beschäftigt',
-                    'Zeitabläufe sind optimal'
+                    // Base: Zeitabläufe
+                    'Zeitabläufe sind nicht reibungslos',
+                    'Zeitabläufe sind teilweise reibungslos',
+                    'Zeitabläufe sind optimal',
+                    // Base: Routinen etablieren
+                    'Routinen sind nicht etabliert',
+                    'Routinen sind teilweise etabliert',
+                    'Routinen sind etabliert',
                 ]
             },
             '1.3': {
                 titel: 'Lernförderliches Unterrichtsklima',
                 tags: [
+                    // Base: Wertschätzung
                     'Die Lehrkraft achtet nicht auf einen wertschätzenden Umgang',
                     'Die Lehrkraft achtet teilweise auf einen wertschätzenden Umgang',
-                    'Die Lehrkraft achtet auf einen wertschätzenden Umgang'
+                    'Die Lehrkraft achtet auf einen wertschätzenden Umgang',
+                    // Base: Wertschätzung Schüler
+                    'Schüler gehen nicht wertschätzend miteinander um',
+                    'Schüler gehen teilweise wertschätzend miteinander um',
+                    'Schüler gehen wertschätzend miteinander um',
+                    // Base: Routinen etablieren
+                    'Schüler äußern sich im Unterricht nicht angstfrei und offen',
+                    'Schüler äußern sich im Unterricht teilweise angstfrei und offen',
+                    'Schüler äußern sich im Unterricht angstfrei und offen',
                 ]
-            }
+            },
         }
     },
     2: {
