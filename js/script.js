@@ -34,178 +34,113 @@ function escapeHtml(text) {
 
 // Kategorien-Daten mit Tags aus dem PDF
 const kategorien = {
-    K: {
+    1: {
         titel: 'Effektive Klassenführung',
         farbe: 'purple',
-        beschreibung: 'Grundlage lernwirksamen Unterrichts',
-        unterkategorien: {
-            'K.1': {
-                titel: 'Störungsprävention',
-                tags: [
-                    // Base: Regeln zum Umgang mit Lernmaterialien
-                    'Klassen- und schulübergreifende Regeln sind nicht bekannt',
-                    'Klassen- und schulübergreifende Regeln sind teilweise bekannt',
-                    'Klassen- und schulübergreifende Regeln sind bekannt',
-                    // Base: Richtlinien zur Kommunikation
-                    'Richtlinien zur Kommunikation sind nicht erkennbar',
-                    'Richtlinien zur Kommunikation sind teilweise erkennbar',
-                    'Richtlinien zur Kommunikation sind erkannbar',
-                    // Base: Lehrkraft-Präsenz
-                    'Lehrkraft ist während Lernphasen nicht präsent',
-                    'Lehrkraft ist während Lernphasen teilweise präsent',
-                    'Lehrkraft ist während Lernphasen präsent',
-                    // Base: Störungen handhaben
-                    'Störungen werden nicht früh erkannt',
-                    'Störungen werden teilweise früh erkannt',
-                    'Störungen werden proaktiv und effektiv begegnet',
-                    // Base: Störungen minimieren
-                    'Störungen treten häufig auf',
-                    'Störungen treten teilweise auf',
-                    'Störungen werden minimiert',
-                    // Base: Lernklima
-                    'Positives Lernklima wird nicht gefördert',
-                    'Positives Lernklima wird teilweise gefördert',
-                    'Vertrauensvolles Lernklima wird gepflegt'
-                ]
-            },
-            'K.2': {
-                titel: 'Effektive Nutzung der Lernzeit',
-                tags: [
-                    // Base: Beschäftigung mit Inhalten
-                    'Lernende sind nicht mit Inhalten beschäftigt',
-                    'Lernende sind teilweise mit Inhalten beschäftigt',
-                    'Lernende sind mit Inhalten beschäftigt',
-                    // Base: Arbeitsabläufe
-                    'Arbeitsabläufe sind nicht reibungslos',
-                    'Arbeitsabläufe sind teilweise reibungslos',
-                    'Arbeitsabläufe sind reibungslos',
-                    // Base: Materialien zugänglich machen
-                    'Materialien werden nicht zugänglich gemacht',
-                    'Materialien werden teilweise zugänglich gemacht',
-                    'Materialien werden zugänglich gemacht',
-                    // Base: Routinen etablieren
-                    'Routinen sind nicht etabliert',
-                    'Routinen sind teilweise etabliert',
-                    'Routinen sind etabliert',
-                    // Base: Lernhindernisse beseitigen
-                    'Lernhindernisse werden nicht beseitigt',
-                    'Lernhindernisse werden teilweise beseitigt',
-                    'Lernhindernisse werden beseitigt'
-                ]
-            },
-        }
-    },
-    1: {
-        titel: 'Veranschaulichung',
-        farbe: 'blue',
-        beschreibung: 'Strukturierung und multimediale Darstellung',
+        beschreibung: 'Grundlage lernwirksamen Unterrichts durch wenige Störungen, effektive Zeitnutzung und positives Lernklima',
         unterkategorien: {
             '1.1': {
-                titel: 'Strukturierung von Lehr- und Lerninhalte',
+                titel: 'Störungsprävention',
                 tags: [
-                    // Base: Arbeitsaufträge visualisieren
-                    'Arbeitsaufträge werden nicht visualisiert',
-                    'Arbeitsaufträge werden teilweise visualisiert',
-                    'Arbeitsaufträge werden visualisiert',
-                    // Base: Lernziele kommunizieren
-                    'Lernziele werden nicht kommuniziert',
-                    'Lernziele werden teilweise kommuniziert',
-                    'Lernziele werden kommuniziert',
-                    // Base: Strukturierung der Inhalte
-                    'Unterrichtsinhalte werden nicht strukturiert',
-                    'Unterrichtsinhalte werden teilweise strukturiert',
-                    'Unterrichtsinhalte werden strukturiert',
-                    // Base: Orientierung geben
-                    'Orientierung wird nicht gegeben',
-                    'Orientierung wird teilweise gegeben',
-                    'Orientierung wird gegeben'
+                    'Lehrkraft achtet nicht auf die Einhaltung von Regeln',
+                    'Lehrkraft achtet teilweise auf die Einhaltung von Regeln',
+                    'Lehrkraft achtet auf die Einhaltung von Regeln',
+                    'Lehrkraft etabliert klare Regeln und Konsequenzen'
                 ]
             },
             '1.2': {
-                titel: 'Anschauliche Darstellung von Unterrichtsinhalten',
+                titel: 'Effektive Nutzung der Lernzeit',
                 tags: [
-                    // Base: Ergebnisse präsentieren
-                    'Schülerergebnisse werden nicht präsentiert',
-                    'Schülerergebnisse werden teilweise präsentiert',
-                    'Schülerergebnisse werden präsentiert',
-                    // Base: Lernprodukte sichtbar machen
-                    'Lernprodukte werden nicht sichtbar gemacht',
-                    'Lernprodukte werden teilweise sichtbar gemacht',
-                    'Lernprodukte werden sichtbar gemacht',
-                    // Base: Fortschritte dokumentieren
-                    'Lernfortschritte werden nicht dokumentiert',
-                    'Lernfortschritte werden teilweise dokumentiert',
-                    'Lernfortschritte werden dokumentiert',
-                    // Base: Kreativität zeigen
-                    'Kreativität wird nicht gezeigt',
-                    'Kreativität wird teilweise gezeigt',
-                    'Kreativität wird gezeigt',
-                    // Base: Interaktive Elemente
-                    'Interaktive Darstellungen werden nicht verwendet',
-                    'Interaktive Darstellungen werden teilweise verwendet',
-                    'Interaktive Darstellungen werden verwendet',
-                    // Base: Visuelle Materialien einsetzen
-                    'Visuelle/auditive Materialien werden nicht eingesetzt',
-                    'Visuelle/auditive Materialien werden teilweise eingesetzt',
-                    'Visuelle/auditive Materialien werden eingesetzt',
+                    'Lernende sind nicht mit Inhalten beschäftigt',
+                    'Lernende sind teilweise mit Inhalten beschäftigt',
+                    'Lernende sind durchgängig mit Inhalten beschäftigt',
+                    'Zeitabläufe sind optimal'
                 ]
             },
             '1.3': {
-                titel: 'Ergebnissicherung',
+                titel: 'Lernförderliches Unterrichtsklima',
                 tags: [
-                    // Base: Materialien für Nachbereitung
-                    'Materialien zur Nachbereitung werden nicht bereitgestellt',
-                    'Materialien zur Nachbereitung werden teilweise bereitgestellt',
-                    'Materialien zur Nachbereitung werden bereitgestellt',
-                    // Base: Inhalte sichern
-                    'Unterrichtsinhalte werden nicht gesichert',
-                    'Unterrichtsinhalte werden teilweise gesichert',
-                    'Unterrichtsinhalte werden gesichert',
-                    // Base: Wiederholung unterstützen
-                    'Wiederholung wird nicht unterstützt',
-                    'Wiederholung wird teilweise unterstützt',
-                    'Wiederholung wird unterstützt',
-                    // Base: Ablage organisieren
-                    'Ablage wird nicht organisiert',
-                    'Ablage wird teilweise organisiert',
-                    'Ablage wird organisiert'
+                    'Die Lehrkraft achtet nicht auf einen wertschätzenden Umgang',
+                    'Die Lehrkraft achtet teilweise auf einen wertschätzenden Umgang',
+                    'Die Lehrkraft achtet auf einen wertschätzenden Umgang'
                 ]
             }
         }
     },
     2: {
-        titel: 'Lebensweltbezug',
-        farbe: 'green',
-        beschreibung: 'Schülerorientierung und Medienreflexion',
+        titel: 'Nachvollziehbarkeit des Lernangebots',
+        farbe: 'blue',
+        beschreibung: 'Klarheit und Struktur im Lernangebot durch definierte Ziele, Kompetenzen und anschauliche Inhaltsdarstellung.',
         unterkategorien: {
             '2.1': {
-                titel: 'Aufgreifen des Mediennutzungsverhaltens',
+                titel: 'Ziele und Kompetenzen',
                 tags: [
-                    // Base: Bewusster Umgang lehren
-                    'Bewusster Medienumgang zu Lernzwecken wird nicht gefördert',
-                    'Bewusster Medienumgang zu Lernzwecken wird teilweise gefördert',
-                    'Bewusster Medienumgang zu Lernzwecken wird gefördert',
-                    // Base: Mediennutzung reflektieren
-                    'Mediennutzung wird nicht reflektiert',
-                    'Mediennutzung wird teilweise reflektiert',
-                    'Mediennutzung wird reflektiert',
-                    // Base: Präventionsarbeit
-                    'Präventionsarbeit gegen Medienrisiken wird nicht durchgeführt',
-                    'Präventionsarbeit gegen Medienrisiken wird teilweise durchgeführt',
-                    'Präventionsarbeit gegen Medienrisiken wird angemessen integriert',
+                    // Base: Kompetenzorientierung
+                    'Lernangebot ist nicht kompetenzorientiert',
+                    'Lernangebot ist teilweise kompetenzorientiert',
+                    'Lernangebot ist kompetenzorientiert',
+                    // Base: Lernziele kommunizieren
+                    'Lernziele werden nicht kommuniziert',
+                    'Lernziele werden teilweise kommuniziert',
+                    'Lernziele werden kommuniziert',
+                    // Base: Erwartungen
+                    'Bezug zu den Lernzielen wird im Unterricht nicht erkennbar',
+                    'Bezug zu den Lernzielen wird im Unterricht teilweise erkennbar',
+                    'Bezug zu den Lernzielen wird im Unterricht deutlich erkennbar',
+                    // Base: Erwartungen
+                    'Erwartungen werden nicht kommuniziert',
+                    'Erwartungen werden teilweise kommuniziert',
+                    'Erwartungen werden klar kommuniziert',
                 ]
             },
             '2.2': {
+                titel: 'Anschauliche Darstellung von Unterrichtsinhalten',
+                tags: [
+                     // Base: Strukturierung der Inhalte
+                    'Unterrichtsinhalte werden nicht strukturiert',
+                    'Unterrichtsinhalte werden teilweise strukturiert',
+                    'Unterrichtsinhalte werden strukturiert',
+                    // Base: Visuelle Materialien einsetzen
+                    'Visuelle/auditive Materialien helfen nicht beim Lernen',
+                    'Visuelle/auditive Materialien helfen teilweise beim Lernen',
+                    'Visuelle/auditive Materialien helfen beim Lernen',
+                    // Base: Interesse wekcen
+                    'Lehrkaft nutzt keine verständliche, altersgerechte Sprache',
+                    'Lehrkaft nutzt teilweise eine verständliche, altersgerechte Sprache',
+                    'Lehrkaft nutzt eine verständliche, altersgerechte Sprache',
+                ]
+            },
+        }
+    },
+    4: {
+        titel: 'Schülerorientierung',
+        farbe: 'green',
+        beschreibung: 'Fokussierung auf Schülerbedürfnisse durch aktive Einbindung, lebensweltliche Bezüge und Kompetenzerleben.',
+        unterkategorien: {
+            '4.1': {
+                titel: 'Beiträge der Schüler',
+                tags: [
+                    // Base: Bewusster Umgang lehren
+                    'Lehrkraft sorgt nicht für eine aktive Rolle der Schüler',
+                    'Lehrkraft sorgt teilweise für eine aktive Rolle der Schüler',
+                    'Lehrkraft sorgt für eine aktive Rolle der Schüler',
+                    // Base: Mediennutzung reflektieren
+                    'Lehrkraft geht wertschätzend mit Schülerbeiträgen um',
+                    'Lehrkraft geht teiwleise wertschätzend mit Schülerbeiträgen um',
+                    'Lehrkraft geht wertschätzend mit Schülerbeiträgen um',
+                    // Base: Präventionsarbeit
+                    'Lehrkraft reagiert nicht auf Anregungen und Bedürfnisse der Schüler',
+                    'Lehrkraft reagiert teilweise auf Anregungen und Bedürfnisse der Schüler',
+                    'Lehrkraft reagiert flexibel auf Anregungen und Bedürfnisse der Schüler',
+                ]
+            },
+            '4.2': {
                 titel: 'Alltags- und Anwendungsbezug',
                 tags: [
-                    // Base: Individuelle Interessen berücksichtigen
-                    'Individuelle Interessen werden nicht berücksichtigt',
-                    'Individuelle Interessen werden teilweise berücksichtigt',
-                    'Individuelle Interessen werden berücksichtigt',
                     // Base: Recherchemöglichkeiten geben
-                    'Recherchemöglichkeiten werden nicht gegeben',
-                    'Recherchemöglichkeiten werden teilweise gegeben',
-                    'Recherchemöglichkeiten werden genutzt',
+                    'Lehrkraft thematisiert die Relevanz der Unterrichtsinhalte nicht',
+                    'Lehrkraft thematisiert teilweise die Relevanz der Unterrichtsinhalte',
+                    'Lehrkraft thematisiert die Relevanz der Unterrichtsinhalte',
                     // Base: Aktuelle Themen aufgreifen
                     'Aktuelle Themen werden nicht aufgegriffen',
                     'Aktuelle Themen werden teilweise aufgegriffen',
@@ -214,25 +149,39 @@ const kategorien = {
                     'Lebensweltbezug wird nicht hergestellt',
                     'Lebensweltbezug wird teilweise hergestellt',
                     'Lebensweltbezug wird hergestellt',
-                    // Base: Kompetenzen aufbauen
-                    'Kompetenzen zur mündigen Teilhabe werden nicht aufgebaut',
-                    'Kompetenzen zur mündigen Teilhabe werden teilweise aufgebaut',
-                    'Kompetenzen zur mündigen Teilhabe werden aufgebaut',
-                    // Base: Authentische Quellen nutzen
-                    'Authentische Materialien werden nicht genutzt',
-                    'Authentische Materialien werden teilweise genutzt',
-                    'Authentische Materialien werden genutzt',
+
+                ]
+            },
+                '4.3': {
+                titel: 'Erleben eigener Kompetenz',
+                tags: [
+                    // Base: Ermutigung
+                    'Lehrkraft ermutigen nicht Schüler zum Überwinden von Schwerigkeiten',
+                    'Lehrkraft ermutigen teilweise Schüler zum Überwinden von Schwerigkeiten',
+                    'Lehrkraft ermutigen Schüler zum Überwinden von Schwerigkeiten',
+                    // Base: Ausbau von Stärken
+                    'Lehrkraft ermutigen nicht Schüler zum Ausbau ihrer Stärken',
+                    'Lehrkraft ermutigen teilweise Schüler zum Ausbau ihrer Stärken',
+                    'Lehrkraft ermutigen Schüler zum zum Ausbau ihrer Stärken',
+                    // Base: Aktuelle Themen aufgreifen
+                    'Fehler werden nicht als Lerngelegenheit behandelt',
+                    'Fehler werden teilweise als Lerngelegenheit behandelt',
+                    'Fehler werden als Lerngelegenheit behandelt',
+                    // Base: Selbsteinschätzung
+                    'Lehrkaft bietet Schülern  nicht die Möglichkeit sich selbst einzuschätzen',
+                    'Lehrkaft bietet Schülern teilweise die Möglichkeit sich selbst einzuschätzen',
+                    'Lehrkaft bietet Schülern die Möglichkeit sich selbst einzuschätzen',
                 ]
             },
         }
     },
     3: {
-        titel: 'Methodenvielfalt',
+        titel: 'Variation der Lehr- und Lernmethoden',
         farbe: 'yellow',
-        beschreibung: 'Variation der Lehr- und Lernmethoden',
+        beschreibung: 'Vielfalt in Methoden und Ansätzen zur Förderung aktiver Teilnahme und individueller Lernprozesse.',
         unterkategorien: {
             '3.1': {
-                titel: 'Angemessene Variation der Lehr- und Lernmethode',
+                titel: 'Variation',
                 tags: [
                     // Base: Methodenvielfalt
                     'Verschiedene Methoden werden nicht eingesetzt',
@@ -246,49 +195,37 @@ const kategorien = {
                     'Aufgabenformate werden nicht variiert',
                     'Aufgabenformate werden teilweise variiert',
                     'Aufgabenformate werden variiert',
-                    // Base: Aktive Beteiligung
-                    'Aktive Beteiligung wird nicht erreicht',
-                    'Aktive Beteiligung wird teilweise erreicht',
-                    'Aktive Beteiligung wird erreicht',
+                ]
+            },
+            '3.2': {
+                titel: 'Motivation und Förderung aktiver Teilnahme',
+                tags: [
                     // Base: Motivation steigert
                     'Motivation wird nicht gesteigert',
                     'Motivation wird teilweise gesteigert',
                     'Motivation wird gesteigert',
-                ]
-            },
-            '3.2': {
-                titel: 'Lehr-Lern-Settings',
-                tags: [
-                    // Base: Analoge Settings anreichern
-                    'Analoge Settings werden digital nicht angereichert',
-                    'Analoge Settings werden teilweise digital angereichert',
-                    'Analoge Settings werden digital angereichert',
                     // Base: Kooperation fördern
                     'Kooperation wird nicht gefördert',
                     'Kooperation wird teilweise gefördert',
                     'Kooperation wird gefördert',
-                    // Base: Ressourcen zugänglich
-                    'Zugriff auf Ressourcen wird nicht ermöglicht',
-                    'Zugriff auf Ressourcen wird teilweise ermöglicht',
-                    'Zugriff auf Ressourcen wird ermöglicht',
                     // Base: Peer-Feedback
                     'Peer-Feedback wird nicht eingesetzt',
                     'Peer-Feedback wird teilweise eingesetzt',
                     'Peer-Feedback wird eingesetzt',
-                    // Lernprodukte präsentieren
-                    'Lernprodukte werden gegenseitig nicht präsentiert',
-                    'Lernprodukte werden gegenseitig teilweise präsentiert',
-                    'Lernprodukte werden gegenseitig präsentiert',
+                    // Base: Aktive Beteiligung
+                    'Aktive Beteiligung wird nicht erreicht',
+                    'Aktive Beteiligung wird teilweise erreicht',
+                    'Aktive Beteiligung wird erreicht',
                 ]
             },
         }
     },
-    4: {
-        titel: 'Individualisiertes Lernen',
+    5: {
+        titel: 'Berücksichtigung verschiedener Lernvoraussetzungen',
         farbe: 'orange',
-        beschreibung: 'Differenzierung und Unterstützung',
+        beschreibung: 'Individuelle Förderung durch Lernstandserfassung, differenzierte Unterstützung und Selbststeuerung.',
         unterkategorien: {
-            '4.1': {
+            '5.1': {
                 titel: 'Lernstandserfassung und Anpassung des Lernangebots',
                 tags: [
                     // Base: Tests auswerten
@@ -309,7 +246,7 @@ const kategorien = {
                     'Individuelle Voraussetzungen werden beachtet',
                 ]
             },
-            '4.2': {
+            '5.2': {
                 titel: 'Lernförderliches Feedback und Unterstützung',
                 tags: [
                     // Base: Unterstützung bereitstellen
@@ -317,71 +254,67 @@ const kategorien = {
                     'Unterstützung bei Aufgaben wird teilweise bereitgestellt',
                     'Unterstützung bei Aufgaben wird bereitgestellt',
                     // Base: Feedback geben
-                    'Baldiges Feedback wird nicht gegeben',
-                    'Baldiges Feedback wird teilweise gegeben',
-                    'Baldiges Feedback wird gegeben',
-                    // Base: Automatisiertes Feedback
-                    'Automatisiertes Feedback wird nicht integriert',
-                    'Automatisiertes Feedback wird teilweise integriert',
-                    'Automatisiertes Feedback wird integriert',
+                    'Direktes Feedback wird nicht gegeben',
+                    'Direktes Feedback wird teilweise gegeben',
+                    'Direktes Feedback wird gegeben',
                     // Base: Kollaborative Werkzeuge
                     'Kollaborative Werkzeuge werden nicht genutzt',
                     'Kollaborative Werkzeuge werden teilweise genutzt',
                     'Kollaborative Werkzeuge werden genutzt',
                 ]
             },
-            '4.3': {
+            '5.3': {
                 titel: 'Selbststeuerung',
                 tags: [
                     // Base: Autonomie einräumen
                     'Autonomie wird nicht eingeräumt',
                     'Autonomie wird teilweise eingeräumt',
                     'Autonomie wird eingeräumt',
-                    // Base: Lernangebot strukturieren
-                    'Strukturiertes Lernangebot wird nicht bereitgestellt',
-                    'Strukturiertes Lernangebot wird teilweise bereitgestellt',
-                    'Strukturiertes Lernangebot wird bereitgestellt',
                     // Base: Selbstgesteuertes Lernen fördern
                     'Selbstgesteuertes Lernen wird nicht gefördert',
                     'Selbstgesteuertes Lernen wird teilweise gefördert',
                     'Selbstgesteuertes Lernen wird gefördert',
-                    // Base: Zielverfolgung unterstützen
-                    'Individuelle Zielverfolgung wird nicht unterstützt',
-                    'Individuelle Zielverfolgung wird teilweise unterstützt',
-                    'Individuelle Zielverfolgung wird unterstützt'
-                ]
-            }
-        }
-    },
-    5: {
-        titel: 'Kompetenzorientierte Aufgaben',
-        farbe: 'red',
-        beschreibung: 'Medienproduktive Formate & intelligentes Üben',
-        unterkategorien: {
-            '5.1': {
-                titel: 'Medienproduktive und kollaborative Aufgabenformate',
-                tags: [
-                    // Base: Aktive Auseinandersetzung
-                    'Aktive, kollaborative Auseinandersetzung wird nicht gefördert',
-                    'Aktive, kollaborative Auseinandersetzung wird teilweise gefördert',
-                    'Aktive, kollaborative Auseinandersetzung wird gefördert',
-                    // Base: Kreative Produkte erstellen
-                    'Kreative Lernprodukte werden nicht erstellt',
-                    'Kreative Lernprodukte werden teilweise erstellt',
-                    'Kreative Lernprodukte werden erstellt',
-                    // Base: Flexible Erstellung
-                    'Flexible Erstellung von Produkten wird nicht ermöglicht',
-                    'Flexible Erstellung von Produkten wird teilweise ermöglicht',
-                    'Flexible Erstellung von Produkten wird ermöglicht',
                     // Base: Formatives Feedback
                     'Formatives Feedback wird nicht ermöglicht',
                     'Formatives Feedback wird teilweise ermöglicht',
                     'Formatives Feedback wird ermöglicht',
                 ]
-            },
-            '5.2': {
-                titel: 'Systematischer Erwerb von Kompetenzen',
+            }
+        }
+    },
+    6: {
+        titel: 'Nachhaltiges Lernen',
+        farbe: 'red',
+        beschreibung: 'Tiefgehender Wissenserwerb durch Vernetzung, herausfordernde Aufgaben und gezielte Übungsphasen.',
+        unterkategorien: {
+            '6.1': {
+                titel: 'Vernetzung des Wissens',
                 tags: [
+                    // Base: Fachliche Zusammenhänge
+                    'Lehrkraft macht fachliche Zusammenhänge nicht deutlich',
+                    'Lehrkraft macht fachliche Zusammenhänge teilweise deutlich',
+                    'Lehrkraft macht fachliche Zusammenhänge deutlich',
+                    // Base: Überfachliche Zusammenhänge
+                    'Lehrkraft macht überfachliche Zusammenhänge nicht deutlich',
+                    'Lehrkraft macht überfachliche Zusammenhänge teilweise deutlich',
+                    'Lehrkraft macht überfachliche Zusammenhänge deutlich',
+                    // Base: Neue Kenntnisse
+                    'Schüler bekommen keine Gelegenheit, sich über neu gewonnene Erkentnisse zu äußern.',
+                    'Schüler bekommen teilweise Gelegenheit, sich über neu gewonnene Erkentnisse zu äußern.',
+                    'Schüler bekommen Gelegenheit, sich über neu gewonnene Erkentnisse zu äußern.',
+                ]
+            },
+            '6.2': {
+                titel: 'Qualitätsvolle Aufgaben',
+                tags: [
+                    // Base: Problemlösung aufbauen
+                    'Problemlösungsfähigkeiten werden nicht aufgebaut',
+                    'Problemlösungsfähigkeiten werden teilweise aufgebaut',
+                    'Problemlösungsfähigkeiten werden aufgebaut',
+                     // Base: Herausfordernde Aufgaben
+                    'Herausfordernde Aufgaben werden nicht gestellt',
+                    'Herausfordernde Aufgaben werden teilweise gestellt',
+                    'Herausfordernde Aufgaben werden gestellt',
                     // Base: Strategien einüben
                     'Lernstrategien werden nicht eingeübt',
                     'Lernstrategien werden teilweise eingeübt',
@@ -390,39 +323,19 @@ const kategorien = {
                     'Nachhaltiger Wissenserwerb wird nicht gefördert',
                     'Nachhaltiger Wissenserwerb wird teilweise gefördert',
                     'Nachhaltiger Wissenserwerb wird gefördert',
-                    // Base: Reflektierte Nutzung
-                    'Reflektierte Nutzung von Medien wird nicht gefördert',
-                    'Reflektierte Nutzung von Medien wird teilweise gefördert',
-                    'Reflektierte Nutzung von Medien wird gefördert',
-                    // Base: Medien zielgerichtet einsetzen
-                    'Medien werden nicht zielgerichtet eingesetzt',
-                    'Medien werden teilweise zielgerichtet eingesetzt',
-                    'Medien werden zielgerichtet eingesetzt',
-                    // Base: Problemlösung aufbauen
-                    'Problemlösungsfähigkeiten werden nicht aufgebaut',
-                    'Problemlösungsfähigkeiten werden teilweise aufgebaut',
-                    'Problemlösungsfähigkeiten werden aufgebaut'
                 ]
             },
-            '5.3': {
-                titel: 'Intelligentes Üben und Konsolidieren',
+            '6.3': {
+                titel: 'Übungsphase und Ergebnissicherung ',
                 tags: [
                     // Base: Differenzierte Übungen
                     'Differenzierte Übungsaufgaben werden nicht angeboten',
                     'Differenzierte Übungsaufgaben werden teilweise angeboten',
                     'Differenzierte Übungsaufgaben werden angeboten',
-                    // Base: Feedback in Übungen
-                    'Direktes Feedback wird nicht gegeben',
-                    'Direktes Feedback wird teilweise gegeben',
-                    'Direktes Feedback wird gegeben',
-                    // Base: Individuelle Gestaltung
-                    'Lernprozess wird nicht individuell gestaltet',
-                    'Lernprozess wird teilweise individuell gestaltet',
-                    'Lernprozess wird individuell gestaltet',
-                    // Base: Nachhaltige Verankerung
-                    'Nachhaltige Verankerung wird nicht unterstützt',
-                    'Nachhaltige Verankerung wird teilweise unterstützt',
-                    'Nachhaltige Verankerung wird unterstützt'
+                    // Base: Sicheurng
+                    'Das Gelernte wird nicht gesichert',
+                    'Das Gelernte wird teilweise gesichert',
+                    'Das Gelernte wird gesichert',
                 ]
             }
         }
@@ -1121,7 +1034,7 @@ function exportJSON() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `hospitation_${escapeHtml(formData.name || 'unnamed')}_${formData.datum}.json`;
+    a.download = `${formData.datum}_hospitation_${escapeHtml(formData.name || 'unnamed')}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
