@@ -82,7 +82,7 @@ body {
 
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 1rem;
 }
 
@@ -289,6 +289,10 @@ textarea:invalid {
     background-color: #86efac;
 }
 
+.bg-blue-300 {
+    background-color: #a3bfe0;
+}
+
 .tags-container {
     display: flex;
     flex-wrap: wrap;
@@ -320,16 +324,9 @@ textarea:invalid {
     justify-content: center;
 }
 
-.tag-btns {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.5rem;
-    margin-bottom: 0.5rem;
-}
 
-.tag-btn {
+.checklist-btn {
     padding: 0.25rem 0.5rem;
-    background: #e5e7eb;
     color: #374151;
     border: none;
     border-radius: 0.25rem;
@@ -1469,4 +1466,15 @@ textarea:invalid {
     .distribution-table td {
         border: 1px solid #000 !important;
     }
+}
+
+
+.uk-checklist ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+.uk-checklist li {
+    margin-bottom: 0.5em;
+    padding-left: 1em;
+    position: relative;
 }
