@@ -400,19 +400,23 @@ function collectFormData() {
     });
 
     // Kategorien sammeln - ZWEISTUFIG: nur Unterkategorien haben Bewertungen
-    document.querySelectorAll('.unterkategorie-section').forEach(section => {
-        const katKey = section.getAttribute('data-kategorie');
-        const rating = section.querySelector('.rating-value').textContent;
-        const notesDiv = section.querySelector('.category-notes');
-        
-        // Speichere nur wenn bewertet (nicht "-") oder Notizen vorhanden
-        if (rating !== '-' || (notesDiv && notesDiv.value.trim())) {
-            data.kategorien[katKey] = {
-                rating: rating === '-' ? '' : rating,
-                notes: notesDiv ? notesDiv.value : ''
-            };
-        }
-    });
+  // Kategorien sammeln - ZWEISTUFIG: nur Unterkategorien haben Bewertungen
+document.querySelectorAll('.unterkategorie-section').forEach(section => {
+    const katKey = section.getAttribute('data-kategorie');
+    const rating = section.querySelector('.rating-value').textContent;
+    const notesDiv = section.querySelector('.category-notes');
+    
+    // Speichere nur wenn tatsächlich bewertet (nicht "-" und nicht "-- %") oder Notizen vorhanden
+    const hasRating = rating !== '-' && rating !== '-- %' && rating.trim() !== '';
+    const hasNotes = notesDiv && notesDiv.value.trim() !== '';
+    
+    if (hasRating || hasNotes) {
+        data.kategorien[katKey] = {
+            rating: hasRating ? rating : '',
+            notes: notesDiv ? notesDiv.value : ''
+        };
+    }
+});
 
     return data;
 }
@@ -1059,3 +1063,4 @@ document.addEventListener('keydown', function(e) {
         exportJSON();
     }
 });
+
