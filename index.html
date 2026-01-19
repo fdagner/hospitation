@@ -49,11 +49,7 @@
 
         <!-- Tab Navigation -->
         <div class="tab-nav">
-            <div class="tabs">
-                <button id="tab-sessions" class="tab-btn">
-                    <span class="icon">ℹ️</span>
-                    Anleitung
-                </button>
+            <div class="tabs">     
                 <button id="tab-erfassung" class="tab-btn active">
                     <span class="icon">📄</span>
                     Erfassung
@@ -65,135 +61,83 @@
             </div>
         </div>
 
-        <!-- Sessions Tab -->
-        <div id="sessions" class="tab-content">
-  
-            <div class="section">
-                <h2 class="text-xl font-bold mb-4">Hilfe zur Benutzung</h2>
-                <div class="modal-body">
-                    <h3>Grundlegende Bedienung</h3>
-                    <ul>
-                        <li>Füllen Sie die Stammdaten aus (Name, Klasse, Fach, Thema, Datum).</li>
-                        <li>Notieren Sie allgemeine Beobachtungen im Editor unten.</li>
-                        <li>Fügen Sie Highlights und Punkte zum Besprechen hinzu.</li>
-                        <li>Laden Sie Fotos hoch (unterstützt Kamera und Dateiauswahl).</li>
-                        <li>Erweitern Sie Kategorien durch Klicken auf den Header (+ wird zu ×).</li>
-                        <li>In jeder Unterkategorie: Wählen Sie eine Bewertung, fügen Sie Tags hinzu
-                            (vorgefertigte oder eigene) und schreiben Sie Notizen.</li>
-                    </ul>
-                    <h3>Sessions verwalten</h3>
-                    <ul>
-                        <li><strong>Neue Hospitation:</strong> Startet eine leere Session.</li>
-                        <li><strong>Speichern:</strong> Speichert die aktuelle Session lokal im Browser (LocalStorage).
-                        </li>
-                        <li><strong>Auswählen:</strong> Laden Sie eine gespeicherte Session aus der Dropdown-Liste.</li>
-                        <li><strong>Löschen:</strong> Entfernt die ausgewählte Session (Bestätigung erforderlich).</li>
-                    </ul>
-                    <h3>Daten und Datenschutz</h3>
-                    <ul>
-                        <li><strong>Speicherung:</strong> Alle Daten werden ausschließlich lokal im Browser gespeichert
-                            (kein Upload an Server). Bei Löschung des Browser-Caches oder Wechsel des Geräts gehen Daten
-                            verloren.</li>
-                        <li><strong>Export:</strong> Lädt eine JSON-Datei herunter, die alle Daten der aktuellen Session
-                            enthält (inkl. Bewertungen, Notizen, Fotos als Base64).</li>
-                        <li><strong>Import:</strong> Lädt eine JSON-Datei hoch und überschreibt die aktuelle Session.
-                            Unterstützt nur gültige Dateien.</li>
-                        <li><strong>Auswertung:</strong> Wechseln Sie zum Tab "Auswertung" für Statistiken, Details und
-                            Druckansicht (nur Auswertung wird gedruckt).</li>
-                    </ul>
-
-                </div>
-            </div>
-        </div>
-
-        <!-- Erfassung Tab -->
+          <!-- Erfassung Tab -->
         <div id="erfassung" class="tab-content active">
             <!-- Stammdaten -->
             <div class="section">
-                <h2 class="text-2xl font-bold mb-4">Stammdaten</h2>
-                <div class="grid">
-                    <div>
-                        <label class="block text-sm font-medium mb-2">Name der Lehrkraft <span
-                                style="color: #ef4444;">*</span></label>
-                        <input type="text" id="name" placeholder="Name eingeben" required
-                            maxlength="50"
-                            title="Name muss 2-50 Buchstaben enthalten (keine Sonderzeichen).">
+                <h2 class="section-main-title">📋 Stammdaten der Hospitation</h2>
+                <div class="form-section">
+                    <div class="form-row">
+                        <div class="form-group required">
+                            <label>Name der Lehrkraft</label>
+                            <input type="text" id="name" placeholder="z.B. Max Mustermann" required>
+                        </div>
+                        <div class="form-group required">
+                            <label>Datum</label>
+                            <input type="date" id="datum" required>
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-2">Klasse</label>
-                        <input type="text" id="klasse" placeholder="z.B. 7a" maxlength="10"
-                            title="Klasse im Format z.B. 7a (Ziffern + Buchstabe).">
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Klasse</label>
+                            <input type="text" id="klasse" placeholder="z.B. 7a">
+                        </div>
+                        <div class="form-group">
+                            <label>Fach</label>
+                            <input type="text" id="fach" placeholder="z.B. Mathematik">
+                        </div>
+                        <div class="form-group">
+                            <label>Dauer (Minuten)</label>
+                            <input type="number" id="dauer" value="45" min="1" max="120">
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-2">Fach</label>
-                        <input type="text" id="fach" placeholder="Fach eingeben"
-                            maxlength="30" title="Fachname 2-30 Buchstaben.">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-2">Thema der Stunde</label>
-                        <input type="text" id="thema" placeholder="Thema eingeben"
-                            maxlength="100"
-                            title="Thema 5-100 Zeichen (Buchstaben, Zahlen, gängige Satzzeichen).">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-2">Datum <span
-                                style="color: #ef4444;">*</span></label>
-                        <input type="date" id="datum" value="" required min="2020-01-01" max="2030-12-31"
-                            title="Datum zwischen 2020 und 2030.">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-2">Unterrichtsdauer (Minuten)</label>
-                        <input type="number" id="dauer" value="45" min="1" max="120"
-                            title="Dauer der Stunde in Minuten (1-120).">
+
+                    <div class="form-group">
+                        <label>Thema der Stunde</label>
+                        <input type="text" id="thema" placeholder="z.B. Einführung in die Prozentrechnung">
                     </div>
                 </div>
 
                 <!-- Verlauf der Stunde -->
-                <div class="phasen-container">
-                    <label class="block text-xl font-medium mb-2">Verlauf der Stunde</label>
+                <div class="form-section">
+                    <h3 class="section-main-title">🕐 Verlauf der Stunde</h3>
                     <div id="phasen-fields"></div>
-                    <button type="button" id="add-phase">+ Phase hinzufügen</button>
+                    <button type="button" id="add-phase" class="btn-add">
+                        <span>+</span> Phase hinzufügen
+                    </button>
                 </div>
 
-                <!-- Allgemeiner Beobachtungstexteditor -->
-                <div class="general-notes">
-                    <label class="block text-xl font-medium mb-2">Allgemeine Beobachtungen</label>
+                <!-- Allgemeine Beobachtungen -->
+                <div class="form-section">
+                    <h3 class="section-main-title">📝 Allgemeine Beobachtungen</h3>
                     <div id="general-notes-editor"></div>
                 </div>
 
-                <!-- Zusätzliche Felder -->
-                <div class="additional-fields">
-                    <div>
-                        <label class="block text-xl font-medium mb-2">Highlights der Stunde</label>
-                        <div id="highlight-container">
-                            <div id="highlight-fields"></div>
-                            <button type="button" id="add-highlight">+ Hinzufügen</button>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-xl font-medium mb-2">Dinge zum Besprechen</label>
-                        <div id="besprechen-container">
-                            <div id="besprechen-fields"></div>
-                            <button type="button" id="add-besprechen">+ Hinzufügen</button>
-                        </div>
-                    </div>
-                </div>
+      <!-- Bewertungskategorien -->
+            <div class="bewertungs-section">
+                <h2 class="section-main-title">✅ Bewertungskategorien</h2>
+                <p class="section-description">Klicken Sie auf eine Kategorie, um sie aufzuklappen und zu bewerten.</p>
+                <div id="kategorien-container"></div>
+            </div>
+        </div>
+
 
                 <!-- Foto-Upload -->
-                <div class="photo-upload">
-                    <label class="block text-xl font-medium mb-2">
-                        <span class="icon">📷</span>
-                        Foto aufnehmen oder hochladen
-                    </label>
-                    <input type="file" id="photo-upload" accept="image/*" capture="environment" multiple>
+                <div class="form-section">
+                    <h3 class="section-main-titlee">📷 Fotos der Stunde</h3>
+                    <div class="photo-upload-area">
+                        <label for="photo-upload" class="photo-upload-label">
+                            <span class="upload-icon">📸</span>
+                            <span>Foto aufnehmen oder hochladen</span>
+                        </label>
+                        <input type="file" id="photo-upload" accept="image/*" capture="environment" multiple class="hidden">
+                    </div>
                     <div id="photos-preview"></div>
                 </div>
-
             </div>
 
-            <!-- Bewertungskategorien -->
-            <div id="kategorien-container"></div>
-        </div>
+      
 
         <!-- Auswertung Tab -->
         <div id="auswertung" class="tab-content">
@@ -259,3 +203,5 @@
         </div>
     </div>
 </body>
+
+</html>
