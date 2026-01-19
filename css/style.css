@@ -1544,3 +1544,15 @@ details.main-kategorie[open] > .main-kategorie-header::before {
 .ql-container.ql-snow {
       border: 1px solid #374151 !important;
 }
+
+#session-select {
+    padding: 0.5rem 1rem;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
