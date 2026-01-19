@@ -298,15 +298,31 @@ function updateSessionSelect() {
 }
 
 function createNewSession() {
-    if (currentSessionId && hasUnsavedChanges()) {
-        if (!confirm('Es gibt ungespeicherte Änderungen. Trotzdem neue Session erstellen?')) {
-            return;
+    // Wenn eine Session geladen ist, frage ob gespeichert werden soll
+    if (currentSessionId) {
+        const shouldSave = confirm('Möchten Sie die aktuelle Session vor dem Erstellen einer neuen Session speichern?');
+        if (shouldSave) {
+            saveCurrentSession();
+        }
+    } else if (hasUnsavedChanges()) {
+        // Wenn keine Session geladen, aber Änderungen vorhanden
+        const shouldSave = confirm('Möchten Sie die aktuellen Daten vor dem Erstellen einer neuen Session speichern?');
+        if (shouldSave) {
+            saveCurrentSession();
+            // Wenn das Speichern fehlschlägt (z.B. fehlende Pflichtfelder), abbrechen
+            if (!currentSessionId) {
+                return;
+            }
         }
     }
     
     currentSessionId = null;
     clearForm();
     updateSessionSelect();
+    
+    // Wechsel zum Erfassungs-Tab
+    switchTab('erfassung');
+    
     alert('Neue Session erstellt. Bitte Stammdaten ausfüllen und speichern.');
 }
 
@@ -347,6 +363,9 @@ function loadSelectedSession() {
     const sessionData = sessions[sessionId];
     loadFormData(sessionData);
     updateSessionSelect();
+    
+    // Wechsel zum Erfassungs-Tab
+    switchTab('erfassung');
 }
 
 function deleteCurrentSession() {
