@@ -146,11 +146,18 @@
         <div id="auswertung" class="tab-content">
             <div class="section auswertung">
                 <h2 class="text-2xl font-bold mb-6">Auswertung</h2>
-                <button id="print-button" class="print-button" onclick="window.print()"
-                    style="padding: 0.5rem 1rem; background: #3b82f6; color: white; border: none; border-radius: 0.5rem; cursor: pointer; margin-bottom: 1rem;">
-                    <span class="icon">🖨️</span>
-                    Ausdrucken
-                </button>
+                <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                    <button id="print-button" class="print-button" onclick="window.print()"
+                        style="padding: 0.5rem 1rem; background: #3b82f6; color: white; border: none; border-radius: 0.5rem; cursor: pointer;">
+                        <span class="icon">🖨️</span>
+                        Ausdrucken
+                    </button>
+                    <button id="export-markdown" class="export-markdown-button"
+                        style="padding: 0.5rem 1rem; background: #10b981; color: white; border: none; border-radius: 0.5rem; cursor: pointer;">
+                        <span class="icon">📝</span>
+                        Als Markdown exportieren
+                    </button>
+                </div>
 
                 <!-- Übersicht -->
                 <div class="overview">
