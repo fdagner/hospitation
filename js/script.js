@@ -227,6 +227,7 @@ function setupEventListeners() {
     document.getElementById('delete-session').addEventListener('click', deleteCurrentSession);
     document.getElementById('session-select').addEventListener('change', loadSelectedSession);
     document.getElementById('export-json').addEventListener('click', exportJSON);
+    document.getElementById('export-markdown').addEventListener('click', exportMarkdown);
     document.getElementById('import-json').addEventListener('click', () => {
         document.getElementById('json-file-input').click();
     });
@@ -970,6 +971,170 @@ function exportJSON() {
     URL.revokeObjectURL(url);
 }
 
+// Markdown Export Funktion
+function exportMarkdown() {
+    const data = collectFormData();
+    
+    // HTML zu Plaintext konvertieren (für generalNotes)
+    function htmlToPlaintext(html) {
+        const temp = document.createElement('div');
+        temp.innerHTML = html;
+        return temp.textContent || temp.innerText || '';
+    }
+    
+    // Markdown-String erstellen
+    let markdown = `# Hospitationsbogen - Auswertung\n\n`;
+    
+    // Stammdaten
+    markdown += `## Stammdaten\n\n`;
+    markdown += `- **Name:** ${data.name || '-'}\n`;
+    markdown += `- **Klasse:** ${data.klasse || '-'}\n`;
+    markdown += `- **Fach:** ${data.fach || '-'}\n`;
+    markdown += `- **Thema:** ${data.thema || '-'}\n`;
+    markdown += `- **Datum:** ${data.datum || '-'}\n`;
+    markdown += `- **Dauer:** ${data.dauer || '-'} Min\n\n`;
+    
+    // Allgemeine Beobachtungen
+    if (data.generalNotes && data.generalNotes.trim() !== '<p><br></p>' && data.generalNotes.trim() !== '') {
+        markdown += `### Allgemeine Beobachtungen\n\n`;
+        markdown += `${htmlToPlaintext(data.generalNotes)}\n\n`;
+    }
+    
+    // Verlauf der Stunde
+    if (data.phasen && data.phasen.length > 0) {
+        markdown += `## Verlauf der Stunde\n\n`;
+        
+        // Berechne Dauer aus Uhrzeiten
+        const phasenMitDauer = data.phasen.map((phase, idx) => {
+            let dauer = 0;
+            if (phase.uhrzeit && data.phasen[idx + 1] && data.phasen[idx + 1].uhrzeit) {
+                const [h1, m1] = phase.uhrzeit.split(':').map(Number);
+                const [h2, m2] = data.phasen[idx + 1].uhrzeit.split(':').map(Number);
+                dauer = (h2 * 60 + m2) - (h1 * 60 + m1);
+            } else if (idx === data.phasen.length - 1 && phase.uhrzeit) {
+                const [h, m] = phase.uhrzeit.split(':').map(Number);
+                const startMinuten = h * 60 + m;
+                if (data.phasen[0] && data.phasen[0].uhrzeit) {
+                    const [h0, m0] = data.phasen[0].uhrzeit.split(':').map(Number);
+                    const erstePhaseMinuten = h0 * 60 + m0;
+                    const gesamtMinuten = startMinuten - erstePhaseMinuten;
+                    dauer = (data.dauer || 45) - gesamtMinuten;
+                }
+            }
+            return { ...phase, dauer: Math.max(0, dauer) };
+        });
+        
+        phasenMitDauer.forEach(phase => {
+            markdown += `**${phase.uhrzeit || '-'}** | **Sozialform:** ${phase.sozialform || '-'} | **Dauer:** ${phase.dauer || '-'} Min`;
+            if (phase.notiz) {
+                markdown += `  \n*${phase.notiz}*`;
+            }
+            markdown += `\n\n`;
+        });
+        
+        // Sozialformen-Verteilung
+        const distribution = {};
+        let totalMinutes = 0;
+        phasenMitDauer.forEach(phase => {
+            if (phase.sozialform && phase.dauer) {
+                distribution[phase.sozialform] = (distribution[phase.sozialform] || 0) + phase.dauer;
+                totalMinutes += phase.dauer;
+            }
+        });
+        
+        if (totalMinutes > 0) {
+            markdown += `### Prozentuale Verteilung der Sozialformen (in Minuten)\n\n`;
+            markdown += `| Sozialform | Minuten | Prozent |\n`;
+            markdown += `|------------|---------|----------|\n`;
+            Object.entries(distribution).forEach(([sozialform, minuten]) => {
+                const prozent = ((minuten / totalMinutes) * 100).toFixed(1);
+                markdown += `| ${sozialform} | ${minuten} | ${prozent} % |\n`;
+            });
+            markdown += `\n`;
+        }
+    }
+    
+    // Durchschnittsbeobachtungen
+    markdown += `## Durchschnittsbeobachtungen (in %)\n\n`;
+    Object.keys(kategorien).forEach(mainKey => {
+        const mainKat = kategorien[mainKey];
+        const subKeys = Object.keys(mainKat.subcategories);
+        
+        const ratings = [];
+        let bewerteteAnzahl = 0;
+        
+        subKeys.forEach(subKey => {
+            if (data.kategorien[subKey] && data.kategorien[subKey].rating && data.kategorien[subKey].rating !== '') {
+                const ratingNum = parseInt(data.kategorien[subKey].rating);
+                if (!isNaN(ratingNum)) {
+                    ratings.push(ratingNum);
+                    bewerteteAnzahl++;
+                }
+            }
+        });
+        
+        let avgText = 'nicht bewertet';
+        if (ratings.length > 0) {
+            const avg = ratings.reduce((a, b) => a + b, 0) / ratings.length;
+            avgText = `Checklist: ${Math.round(avg)} %`;
+        }
+        
+        markdown += `### ${mainKey}. ${mainKat.title}\n`;
+        markdown += `(${bewerteteAnzahl} von ${subKeys.length} bewertet)  \n`;
+        markdown += `${avgText}\n\n`;
+    });
+    
+    // Detailansicht
+    markdown += `## Detailansicht\n\n`;
+    let hasDetails = false;
+    
+    Object.keys(kategorien).forEach(mainKey => {
+        const mainKat = kategorien[mainKey];
+        const hasData = Object.keys(mainKat.subcategories).some(subKey => {
+            return data.kategorien[subKey] && (data.kategorien[subKey].rating || data.kategorien[subKey].notes);
+        });
+        
+        if (hasData) {
+            hasDetails = true;
+            markdown += `### ${mainKat.title}\n\n`;
+            
+            Object.keys(mainKat.subcategories).forEach(subKey => {
+                const subKat = mainKat.subcategories[subKey];
+                const subData = data.kategorien[subKey];
+                
+                if (subData && (subData.rating || subData.notes)) {
+                    markdown += `#### ${subKey}: ${subKat.title}\n`;
+                    if (subData.rating) {
+                        markdown += `**Bewertung:** ${subData.rating}\n\n`;
+                    }
+                    if (subData.notes) {
+                        markdown += `${subData.notes}\n\n`;
+                    }
+                }
+            });
+        }
+    });
+    
+    if (!hasDetails) {
+        markdown += `Keine Detaildaten vorhanden.\n\n`;
+    }
+    
+    // Fotos (Info, dass Fotos nicht exportiert werden)
+    if (photos.length > 0) {
+        markdown += `## Fotos\n\n`;
+        markdown += `${photos.length} Foto(s) in der Session vorhanden (Fotos können nicht in Markdown exportiert werden).\n\n`;
+    }
+    
+    // Markdown-Datei erstellen und herunterladen
+    const blob = new Blob([markdown], { type: 'text/markdown;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `hospitation_${data.name}_${data.datum}.md`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
 function importJSON(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -1082,4 +1247,3 @@ document.addEventListener('keydown', function(e) {
         exportJSON();
     }
 });
-
