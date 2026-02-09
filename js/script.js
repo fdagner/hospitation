@@ -1,173 +1,121 @@
 // Kategorien-Datenstruktur
 const kategorien = {
-    'K': {
-        title: 'Effektive Klassenführung',
-        description: 'Grundlage für lernförderlichen Unterricht: Wenige Störungen, effektive Nutzung der Zeit, positives Klima.',
-        color: 'purple',
-        subcategories: {
-            'K.1': {
-                title: 'Störungsprävention',
-                items: [
-                    'Klare Regeln und Routinen sind bekannt und werden konsequent eingefordert',
-                    'Lehrkraft ist präsent und achtet auf Einhaltung in Arbeits- und Kommunikationsphasen',
-                    'Frühe Erkennung von Problemen und angemessenes Eingreifen',
-                    'Geräte und Materialien sind klar geregelt, um Ablenkungen zu minimieren'
-                ]
-            },
-            'K.2': {
-                title: 'Effektive Nutzung der Lernzeit',
-                items: [
-                    'Einheitliche Strukturen und Orientierungshilfen für Schüler und Lehrkraft',
-                    'Vorbereitete Umgebung für reibungslose Abläufe und klare Fristen',
-                    'Systematische Einführung von Arbeitsweisen, Fokus auf Inhalte',
-                    'Schüler sind beschäftigt, Hindernisse werden schnell beseitigt'
-                ]
-            },
-            'K.3': {
-                title: 'Lernförderliches Klima',
-                items: [
-                    'Wertschätzender Umgang und vertrauensvolle Beziehung',
-                    'Schüler äußern sich offen und angstfrei',
-                    'Positive Atmosphäre, die Lernen unterstützt'
-                ]
-            }
-        }
-    },
     '1': {
-        title: 'Veranschaulichung',
-        description: 'Strukturierung von Inhalten und Prozessen für besseres Verständnis und Ergebnissicherung.',
+        title: 'Kognitive Aktivierung',
+        description: 'Fokus auf zentrale Inhalte, Ermittlung des Verständnisses, herausfordernde Fragen und Aufgaben, engagierte Beteiligung.',
         color: 'blue',
         subcategories: {
             '1.1': {
-                title: 'Strukturierung der Lehr- und Lerninhalte',
+                title: 'Verständnisorientierung',
                 items: [
-                    'Klare Visualisierung von Aufträgen und Erwartungen',
-                    'Nachvollziehbare Bereitstellung von Inhalten und Abläufen',
-                    'Übersicht über Ziele, Fristen und Zwischenziele'
+                    'Der Unterricht hat einen klaren Fokus auf die zentralen Inhalte, die von den Schülerinnen und Schülern verstanden werden sollen',
+                    'Die Lehrkraft fokussiert ihren Unterricht auf die zentralen zu erwerbenden Inhalte',
+                    'Der Bezug zu den zentralen Inhalten wird im Verlauf der Stunde immer wieder hergestellt',
+                    'Unterrichtsinhalte werden mit Blick auf das Unterrichtsziel zusammengefasst'
                 ]
             },
             '1.2': {
-                title: 'Anschauliche Darstellung von Unterrichtsinhalten',
+                title: 'Ermittlung von Denkweisen und Vorstellungen',
                 items: [
-                    'Multimediale Angebote für Verständnis (z. B. visuelle und auditive Elemente)',
-                    'Abstrakte Konzepte durch Beispiele und Modelle nachvollziehbar machen',
-                    'Verbindung von Neuem zu Bekanntem, Interesse wecken'
+                    'Die Lehrkraft ermittelt das aktuelle Verständnis der Schülerinnen und Schüler',
+                    'Die Lehrkraft sammelt unterschiedliche Schülerbeiträge und hält sich dabei selbst zurück',
+                    'Die Lehrkraft befragt die Schülerinnen und Schüler nach ihren Ideen und Vorstellungen zu einem Thema',
+                    'Die Lernenden werden aufgefordert, ihre Antworten zu begründen'
                 ]
             },
             '1.3': {
-                title: 'Ergebnissicherung',
+                title: 'Herausfordernde Aufgaben und Fragen',
                 items: [
-                    'Sichtbare Präsentation von Lernergebnissen',
-                    'Strukturierte Vertiefung und Wiederholung der Inhalte',
-                    'Dokumentation und Anreicherung von Materialien zur Nachbereitung'
+                    'Im Unterricht wird mit Fragen und Aufgaben gearbeitet, die die Schülerinnen und Schüler zur vertieften Auseinandersetzung mit den Inhalten herausfordern',
+                    'Die von der Lehrkraft gestellten Fragen und Aufgaben gehen über die reine Reproduktion von auswendig gelerntem Wissen hinaus',
+                    'Die Schülerinnen und Schüler werden aufgefordert, eigene Lösungsideen zu entwickeln',
+                    'Unterschiedliche Meinungen, Lösungen oder Fälle werden einander kontrastierend gegenübergestellt'
+                ]
+            },
+            '1.4': {
+                title: 'Engagement der Schülerinnen und Schüler',
+                items: [
+                    'Die Schülerinnen und Schüler sind engagiert am Unterrichtsgeschehen beteiligt',
+                    'Der Aufmerksamkeitsfokus der Schülerinnen und Schüler liegt auf dem Unterrichtsgeschehen',
+                    'Die Schülerinnen und Schüler beteiligen sich aktiv am Unterricht und stellen Fragen',
+                    'Die Lernenden zeigen Interesse und Freude am Unterricht'
                 ]
             }
         }
     },
     '2': {
-        title: 'Lebensweltbezug',
-        description: 'Berücksichtigung von Mediennutzung und realen Kontexten für Relevanz und Motivation.',
+        title: 'Konstruktive Unterstützung',
+        description: 'Lernförderliches Feedback, individuelle Unterstützung, wertschätzender Umgang zwischen Lehrkraft und Schülern.',
         color: 'green',
         subcategories: {
             '2.1': {
-                title: 'Aufgreifen des Mediennutzungsverhaltens',
+                title: 'Qualität des Feedbacks',
                 items: [
-                    'Gezielte Nutzung zu Lernzwecken jenseits von Unterhaltung',
-                    'Reflexion des alltäglichen Medienverhaltens',
-                    'Thematisierung von Herausforderungen wie Überkonsum'
+                    'Das Feedback, das die Lehrkraft den Schülerinnen und Schülern gibt, ist zum Weiterlernen hilfreich',
+                    'Die Rückmeldungen und Kommentare der Lehrkraft helfen dabei, Fehler zu erkennen und das weitere Vorgehen zu verbessern',
+                    'Es wird erarbeitet, warum eine Antwort oder eine Lösung richtig oder falsch war',
+                    'Die Lehrkraft nutzt Fehler, um auf unzutreffendes Verständnis der Schülerinnen und Schüler einzugehen'
                 ]
             },
             '2.2': {
-                title: 'Alltags- und Anwendungsbezug',
+                title: 'Individuelle Unterstützung im Lernprozess',
                 items: [
-                    'Berücksichtigung individueller Interessen und Lernwege',
-                    'Lernförderliche Nutzung für Kompetenzen und Teilhabe',
-                    'Rückgriff auf bekannte Quellen (z. B. Medien aus dem Alltag) und Reflexion'
+                    'Die Lehrkraft unterstützt die Schülerinnen und Schüler individuell in ihrem Lernprozess',
+                    'Die Lehrkraft nimmt sich bei Verständnisproblemen gezielt Zeit für einzelne Schülerinnen und Schüler',
+                    'Unterstützende Maßnahmen und Hilfestellungen sind individuell an den Lernstand angepasst',
+                    'Die Lehrkraft ermöglicht eine Differenzierung des Anspruchsniveaus, des Lerntempos und/oder der Inhalte'
+                ]
+            },
+            '2.3': {
+                title: 'Wertschätzung und Respekt',
+                items: [
+                    'Die Lehrkraft begegnet den Schülerinnen und Schülern mit Wertschätzung und Respekt',
+                    'Die Lehrkraft geht freundlich und respektvoll mit ihren Schülerinnen und Schülern um',
+                    'Die Lehrkraft zeigt Interesse für die Perspektiven und Meinungen der Schülerinnen und Schüler',
+                    'Die Lehrkraft geht in angemessenem Rahmen auch auf persönliche Berichte oder Probleme ein'
+                ]
+            },
+            '2.4': {
+                title: 'Klassenklima',
+                items: [
+                    'Die Schülerinnen und Schüler begegnen einander und der Lehrkraft mit Wertschätzung und Respekt',
+                    'Die Schülerinnen und Schüler hören einander zu und lassen sich gegenseitig ausreden',
+                    'Die Schülerinnen und Schüler helfen und unterstützen sich gegenseitig',
+                    'Das Klassenklima ist durch Zusammenhalt und Kameradschaftlichkeit geprägt'
                 ]
             }
         }
     },
     '3': {
-        title: 'Methodenvielfalt',
-        description: 'Variation von Methoden und Sozialformen für Rhythmisierung und Motivation.',
+        title: 'Strukturierte Klassenführung',
+        description: 'Störungsfreier Unterricht, guter Überblick der Lehrkraft, effektive Nutzung der Unterrichtszeit.',
         color: 'yellow',
         subcategories: {
             '3.1': {
-                title: 'Angemessene Variation der Lehr- und Lernmethoden',
+                title: 'Störungen durch Schülerinnen und Schüler',
                 items: [
-                    'Erweiterung des Repertoires durch flexible Methoden und Sozialformen',
-                    'Aktive Beteiligung durch interaktive und kreative Formate',
-                    'Rhythmisierung des Unterrichts durch Wechsel von Aufgaben'
+                    'Der Unterricht verläuft weitgehend störungsfrei',
+                    'Der Unterricht verläuft ruhig und geordnet',
+                    'Die Lautstärke während der Unterrichtsstunde ist der jeweiligen Unterrichtsphase angemessen',
+                    'Die Schülerinnen und Schüler halten sich an Regeln und bestehende Rituale'
                 ]
             },
             '3.2': {
-                title: 'Verschränkung analoger und digitaler Lernsettings',
+                title: 'Monitoring',
                 items: [
-                    'Schneller Zugriff auf Ressourcen zur Anreicherung analoger Settings',
-                    'Kooperative Prozesse und Peer-Feedback',
-                    'Ergänzung analoger Möglichkeiten durch vielfältige Gestaltung'
-                ]
-            }
-        }
-    },
-    '4': {
-        title: 'Individualisiertes Lernen',
-        description: 'Anpassung an Voraussetzungen durch Erfassung, Feedback und Selbststeuerung.',
-        color: 'orange',
-        subcategories: {
-            '4.1': {
-                title: 'Lernstandserfassung und Anpassung des Lernangebots',
-                items: [
-                    'Automatisierte Auswertung von Tests für unmittelbares Feedback',
-                    'Nachverfolgung des individuellen Fortschritts',
-                    'Differenzierte Aufgaben unter Berücksichtigung von Voraussetzungen'
+                    'Die Lehrkraft hat einen guten Überblick über das Geschehen im Unterricht',
+                    'Die Lehrkraft hat alle Schülerinnen und Schüler im Blick',
+                    'Die Lehrkraft ist im ganzen Klassenzimmer präsent (z. B. durch Blicke oder Bewegungen)',
+                    'Aufkeimende Störungen behebt die Lehrkraft frühzeitig und beiläufig'
                 ]
             },
-            '4.2': {
-                title: 'Lernförderliches Feedback und Unterstützung',
+            '3.3': {
+                title: 'Zeitnutzung',
                 items: [
-                    'Vielfältige Unterstützung bei Aufgabenbearbeitung',
-                    'Zeitnahes individuelles Feedback',
-                    'Integration von Übungen mit Feedback und kollaborativen Austausch'
-                ]
-            },
-            '4.3': {
-                title: 'Unterstützung des selbstgesteuerten Lernens',
-                items: [
-                    'Autonomie und Wahlfreiheit in der Gestaltung',
-                    'Strukturiertes Angebot für Selbstorganisation',
-                    'Förderung durch Projekte und Arbeitshilfen'
-                ]
-            }
-        }
-    },
-    '5': {
-        title: 'Kompetenzorientierte Aufgabenformate & intelligentes Üben',
-        description: 'Aktive Auseinandersetzung, Medienkompetenz und nachhaltige Verankerung.',
-        color: 'red',
-        subcategories: {
-            '5.1': {
-                title: 'Medienproduktive und kollaborative Aufgabenformate',
-                items: [
-                    'Aktive Erstellung kreativer Produkte (z. B. Präsentationen, Videos)',
-                    'Flexible und ortsunabhängige Bearbeitung',
-                    'Überarbeitung basierend auf Feedback'
-                ]
-            },
-            '5.2': {
-                title: 'Systematischer Erwerb von Medienkompetenz',
-                items: [
-                    'Einüben und Reflektieren von Lern- und Organisationsstrategien',
-                    'Kritische Reflexion der Medienanwendung',
-                    'Fachintegrativer Aufbau durch regelmäßige Nutzung'
-                ]
-            },
-            '5.3': {
-                title: 'Intelligentes Üben',
-                items: [
-                    'Sofortige Überprüfung und direktes Feedback',
-                    'Differenzierte Übungsaufgaben nach Voraussetzungen',
-                    'Vernetzung mit Vorwissen und Anwendung in neuen Kontexten'
+                    'Die zur Verfügung stehende Unterrichtszeit wird für die Auseinandersetzung mit den Lerninhalten genutzt',
+                    'Die Unterrichtsstunde beginnt und endet pünktlich',
+                    'Die Unterrichtszeit wird für fachliche Themen genutzt',
+                    'Zwischen einzelnen Unterrichtsphasen kommt es nicht zu unnötigen Warte- oder Leerzeiten'
                 ]
             }
         }
@@ -543,7 +491,7 @@ function addPhase(uhrzeit = '', sozialform = '', notiz = '') {
             <option value="Gruppenarbeit" ${sozialform === 'Gruppenarbeit' ? 'selected' : ''}>Gruppenarbeit</option>
             <option value="Plenum" ${sozialform === 'Plenum' ? 'selected' : ''}>Plenum</option>
             <option value="Lehrervortrag" ${sozialform === 'Lehrervortrag' ? 'selected' : ''}>Lehrervortrag</option>
-                        <option value="Leerlauf" ${sozialform === 'Leerlauf' ? 'selected' : ''}>Leerlauf</option>
+            <option value="Leerlauf" ${sozialform === 'Leerlauf' ? 'selected' : ''}>Leerlauf</option>
             <option value="Sonstiges" ${sozialform === 'Sonstiges' ? 'selected' : ''}>Sonstiges</option>
         </select>
         <textarea class="notiz-input" placeholder="Kurznotiz..." rows="1">${notiz}</textarea>
