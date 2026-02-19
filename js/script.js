@@ -122,7 +122,6 @@ const kategorien = {
     }
 };
 
-
 // Globale Variablen
 let sessions = {};
 let currentSessionId = null;
@@ -141,9 +140,23 @@ function initializeApp() {
     renderKategorien();
     setDefaultDate();
     addPhase();
+    initTheme();
 }
 
-// Quill Editor initialisieren
+function initTheme() {
+    const stored = localStorage.getItem('hospitationsTheme');
+    const isLight = stored === 'light';
+    applyTheme(isLight);
+}
+
+function applyTheme(light) {
+    document.documentElement.classList.toggle('light', light);
+    const btn = document.getElementById('theme-toggle');
+    if (btn) btn.textContent = light ? 'Dark' : 'Light';
+    localStorage.setItem('hospitationsTheme', light ? 'light' : 'dark');
+}
+
+// Quill Editor
 function initializeQuillEditor() {
     if (typeof Quill !== 'undefined') {
         generalNotesEditor = new Quill('#general-notes-editor', {
@@ -162,7 +175,14 @@ function initializeQuillEditor() {
 
 // Event Listeners
 function setupEventListeners() {
-    // Tab Navigation
+    // Theme toggle
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+        const isLight = document.documentElement.classList.contains('light');
+        applyTheme(!isLight);
+    });
+
+    // Tab Navigation – drei Tabs
+    document.getElementById('tab-stammdaten').addEventListener('click', () => switchTab('stammdaten'));
     document.getElementById('tab-erfassung').addEventListener('click', () => switchTab('erfassung'));
     document.getElementById('tab-auswertung').addEventListener('click', () => {
         switchTab('auswertung');
@@ -187,32 +207,19 @@ function setupEventListeners() {
     // Foto-Upload
     document.getElementById('photo-upload').addEventListener('change', handlePhotoUpload);
 
-    // Modal für Bildansicht
+    // Modal
     const modal = document.getElementById('image-modal');
-    const closeModal = modal.querySelector('.close');
-    closeModal.addEventListener('click', () => {
-        modal.style.display = 'none';
-    });
-    window.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modal.style.display = 'none';
-        }
-    });
+    modal.querySelector('.close').addEventListener('click', () => modal.style.display = 'none');
+    window.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
 }
 
 // Tab-Wechsel
 function switchTab(tabName) {
-    // Tabs aktualisieren
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
 
- if (tabName === 'erfassung') {
-        document.getElementById('tab-erfassung').classList.add('active');
-        document.getElementById('erfassung').classList.add('active');
-    } else if (tabName === 'auswertung') {
-        document.getElementById('tab-auswertung').classList.add('active');
-        document.getElementById('auswertung').classList.add('active');
-    }
+    document.getElementById('tab-' + tabName).classList.add('active');
+    document.getElementById(tabName).classList.add('active');
 }
 
 // Sessions verwalten
@@ -228,13 +235,13 @@ function saveSessions() {
 
 function updateSessionSelect() {
     const select = document.getElementById('session-select');
-    select.innerHTML = '<option value="">Session auswählen...</option>';
-    
+    select.innerHTML = '<option value="">Session auswählen…</option>';
+
     Object.keys(sessions).forEach(id => {
         const session = sessions[id];
         const option = document.createElement('option');
         option.value = id;
-        option.textContent = `${session.name || 'Unbenannt'} - ${session.datum || 'Kein Datum'}`;
+        option.textContent = `${session.name || 'Unbenannt'} – ${session.datum || 'Kein Datum'}`;
         select.appendChild(option);
     });
 
@@ -247,37 +254,26 @@ function updateSessionSelect() {
 }
 
 function createNewSession() {
-    // Wenn eine Session geladen ist, frage ob gespeichert werden soll
     if (currentSessionId) {
-        const shouldSave = confirm('Möchten Sie die aktuelle Session vor dem Erstellen einer neuen Session speichern?');
-        if (shouldSave) {
+        if (confirm('Aktuelle Session vor dem Fortfahren speichern?')) {
             saveCurrentSession();
         }
     } else if (hasUnsavedChanges()) {
-        // Wenn keine Session geladen, aber Änderungen vorhanden
-        const shouldSave = confirm('Möchten Sie die aktuellen Daten vor dem Erstellen einer neuen Session speichern?');
-        if (shouldSave) {
+        if (confirm('Aktuelle Daten speichern?')) {
             saveCurrentSession();
-            // Wenn das Speichern fehlschlägt (z.B. fehlende Pflichtfelder), abbrechen
-            if (!currentSessionId) {
-                return;
-            }
+            if (!currentSessionId) return;
         }
     }
-    
+
     currentSessionId = null;
     clearForm();
     updateSessionSelect();
-    
-    // Wechsel zum Erfassungs-Tab
-    switchTab('erfassung');
-    
-    alert('Neue Session erstellt. Bitte Stammdaten ausfüllen und speichern.');
+    switchTab('stammdaten');
 }
 
 function saveCurrentSession() {
     const data = collectFormData();
-    
+
     if (!data.name || !data.datum) {
         alert('Bitte Name und Datum ausfüllen.');
         return;
@@ -296,50 +292,35 @@ function saveCurrentSession() {
 function loadSelectedSession() {
     const select = document.getElementById('session-select');
     const sessionId = select.value;
-
-    if (!sessionId) {
-        return;
-    }
+    if (!sessionId) return;
 
     if (currentSessionId && hasUnsavedChanges()) {
-        if (!confirm('Es gibt ungespeicherte Änderungen. Trotzdem andere Session laden?')) {
+        if (!confirm('Ungespeicherte Änderungen verwerfen und andere Session laden?')) {
             select.value = currentSessionId;
             return;
         }
     }
 
     currentSessionId = sessionId;
-    const sessionData = sessions[sessionId];
-    loadFormData(sessionData);
+    loadFormData(sessions[sessionId]);
     updateSessionSelect();
-    
-    // Wechsel zum Erfassungs-Tab
-    switchTab('erfassung');
+    switchTab('stammdaten');
 }
 
 function deleteCurrentSession() {
-    if (!currentSessionId) {
-        alert('Keine Session ausgewählt.');
-        return;
-    }
-
-    if (!confirm('Session wirklich löschen?')) {
-        return;
-    }
+    if (!currentSessionId) return;
+    if (!confirm('Session wirklich löschen?')) return;
 
     delete sessions[currentSessionId];
     saveSessions();
     currentSessionId = null;
     clearForm();
     updateSessionSelect();
-    alert('Session gelöscht.');
 }
 
 function hasUnsavedChanges() {
     if (!currentSessionId) return false;
-    const currentData = collectFormData();
-    const savedData = sessions[currentSessionId];
-    return JSON.stringify(currentData) !== JSON.stringify(savedData);
+    return JSON.stringify(collectFormData()) !== JSON.stringify(sessions[currentSessionId]);
 }
 
 // Formular-Daten sammeln
@@ -357,7 +338,7 @@ function collectFormData() {
         photos: photos
     };
 
-    // Phasen sammeln - UHRZEIT-BASIERT
+    // Phasen
     document.querySelectorAll('.phase-item').forEach(item => {
         const uhrzeit = item.querySelector('.uhrzeit-input').value;
         const sozialform = item.querySelector('.sozialform-select').value;
@@ -367,24 +348,21 @@ function collectFormData() {
         }
     });
 
-    // Kategorien sammeln - ZWEISTUFIG: nur Unterkategorien haben Bewertungen
-  // Kategorien sammeln - ZWEISTUFIG: nur Unterkategorien haben Bewertungen
-document.querySelectorAll('.unterkategorie-section').forEach(section => {
-    const katKey = section.getAttribute('data-kategorie');
-    const rating = section.querySelector('.rating-value').textContent;
-    const notesDiv = section.querySelector('.category-notes');
-    
-    // Speichere nur wenn tatsächlich bewertet (nicht "-" und nicht "-- %") oder Notizen vorhanden
-    const hasRating = rating !== '-' && rating !== '-- %' && rating.trim() !== '';
-    const hasNotes = notesDiv && notesDiv.value.trim() !== '';
-    
-    if (hasRating || hasNotes) {
-        data.kategorien[katKey] = {
-            rating: hasRating ? rating : '',
-            notes: notesDiv ? notesDiv.value : ''
-        };
-    }
-});
+    // Kategorien
+    document.querySelectorAll('.unterkategorie-section').forEach(section => {
+        const katKey = section.getAttribute('data-kategorie');
+        const rating = section.querySelector('.rating-value').textContent;
+        const notesDiv = section.querySelector('.category-notes');
+        const hasRating = rating !== '-' && rating !== '-- %' && rating.trim() !== '';
+        const hasNotes = notesDiv && notesDiv.value.trim() !== '';
+
+        if (hasRating || hasNotes) {
+            data.kategorien[katKey] = {
+                rating: hasRating ? rating : '',
+                notes: notesDiv ? notesDiv.value : ''
+            };
+        }
+    });
 
     return data;
 }
@@ -397,31 +375,23 @@ function clearForm() {
     document.getElementById('thema').value = '';
     setDefaultDate();
     document.getElementById('dauer').value = '45';
-    
-    if (generalNotesEditor) {
-        generalNotesEditor.root.innerHTML = '';
-    }
+
+    if (generalNotesEditor) generalNotesEditor.root.innerHTML = '';
 
     document.getElementById('phasen-fields').innerHTML = '';
     addPhase();
 
-    // Kategorien zurücksetzen - ZWEISTUFIG
     document.querySelectorAll('.unterkategorie-section').forEach(section => {
-        section.querySelector('.rating-value').textContent = '-';
+        section.querySelector('.rating-value').textContent = '-- %';
         const notesDiv = section.querySelector('.category-notes');
         if (notesDiv) notesDiv.value = '';
         updateRatingButtons(section, '-');
     });
 
-    // Alle Hauptkategorien zuklappen (details schließen)
-    document.querySelectorAll('details.main-kategorie').forEach(details => {
-        details.removeAttribute('open');
-    });
+    document.querySelectorAll('details.main-kategorie').forEach(d => d.removeAttribute('open'));
 
     photos = [];
     document.getElementById('photos-preview').innerHTML = '';
-    
-    // Scroll to top
     window.scrollTo(0, 0);
 }
 
@@ -438,7 +408,6 @@ function loadFormData(data) {
         generalNotesEditor.root.innerHTML = data.generalNotes;
     }
 
-    // Phasen laden
     document.getElementById('phasen-fields').innerHTML = '';
     if (data.phasen && data.phasen.length > 0) {
         data.phasen.forEach(p => addPhase(p.uhrzeit, p.sozialform, p.notiz));
@@ -446,7 +415,6 @@ function loadFormData(data) {
         addPhase();
     }
 
-    // Kategorien laden - ZWEISTUFIG
     if (data.kategorien) {
         Object.keys(data.kategorien).forEach(katKey => {
             const katDiv = document.querySelector(`[data-kategorie="${katKey}"]`);
@@ -461,25 +429,20 @@ function loadFormData(data) {
         });
     }
 
-    // Fotos laden
     photos = data.photos || [];
     renderPhotos();
-    
-    // Scroll to top
     window.scrollTo(0, 0);
 }
 
 // Phasen verwalten
 function addPhase(uhrzeit = '', sozialform = '', notiz = '') {
     const container = document.getElementById('phasen-fields');
-    
-    // Automatische Uhrzeit-Generierung wenn leer
+
     if (!uhrzeit) {
         const now = new Date();
-        uhrzeit = now.getHours().toString().padStart(2, '0') + ':' + 
-                  now.getMinutes().toString().padStart(2, '0');
+        uhrzeit = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
     }
-    
+
     const div = document.createElement('div');
     div.className = 'phase-item';
     div.innerHTML = `
@@ -494,22 +457,21 @@ function addPhase(uhrzeit = '', sozialform = '', notiz = '') {
             <option value="Leerlauf" ${sozialform === 'Leerlauf' ? 'selected' : ''}>Leerlauf</option>
             <option value="Sonstiges" ${sozialform === 'Sonstiges' ? 'selected' : ''}>Sonstiges</option>
         </select>
-        <textarea class="notiz-input" placeholder="Kurznotiz..." rows="1">${notiz}</textarea>
-        <button type="button" class="remove-phase" title="Phase entfernen">×</button>
+        <textarea class="notiz-input" placeholder="Kurznotiz…" rows="1">${notiz}</textarea>
+        <button type="button" class="remove-phase" title="Entfernen">×</button>
     `;
     container.appendChild(div);
 
-    div.querySelector('.remove-phase').addEventListener('click', function() {
+    div.querySelector('.remove-phase').addEventListener('click', () => {
         if (container.children.length > 1) {
             div.remove();
         } else {
             alert('Mindestens eine Phase muss vorhanden sein.');
         }
     });
-    
-    // Auto-resize für Textarea
+
     const textarea = div.querySelector('.notiz-input');
-    textarea.addEventListener('input', function() {
+    textarea.addEventListener('input', function () {
         this.style.height = 'auto';
         this.style.height = this.scrollHeight + 'px';
     });
@@ -517,13 +479,9 @@ function addPhase(uhrzeit = '', sozialform = '', notiz = '') {
 
 // Foto-Upload
 function handlePhotoUpload(event) {
-    const files = event.target.files;
-    Array.from(files).forEach(file => {
+    Array.from(event.target.files).forEach(file => {
         const reader = new FileReader();
-        reader.onload = function (e) {
-            photos.push(e.target.result);
-            renderPhotos();
-        };
+        reader.onload = (e) => { photos.push(e.target.result); renderPhotos(); };
         reader.readAsDataURL(file);
     });
     event.target.value = '';
@@ -540,31 +498,25 @@ function renderPhotos() {
             <button type="button" class="remove-photo" data-index="${index}">×</button>
         `;
         container.appendChild(div);
-
         div.querySelector('img').addEventListener('click', () => showImageModal(photo));
-        div.querySelector('.remove-photo').addEventListener('click', () => {
-            photos.splice(index, 1);
-            renderPhotos();
-        });
+        div.querySelector('.remove-photo').addEventListener('click', () => { photos.splice(index, 1); renderPhotos(); });
     });
 }
 
 function showImageModal(src) {
     const modal = document.getElementById('image-modal');
-    const img = document.getElementById('modal-image');
-    img.src = src;
+    document.getElementById('modal-image').src = src;
     modal.style.display = 'flex';
 }
 
-// Kategorien rendern - DETAILS/SUMMARY STRUKTUR
+// Kategorien rendern
 function renderKategorien() {
     const container = document.getElementById('kategorien-container');
     container.innerHTML = '';
 
     Object.keys(kategorien).forEach(mainKey => {
         const mainKat = kategorien[mainKey];
-        
-        // Hauptkategorie als details/summary
+
         const mainDetails = document.createElement('details');
         mainDetails.className = `kategorie-section main-kategorie color-${mainKat.color}`;
         mainDetails.setAttribute('data-main-kategorie', mainKey);
@@ -578,18 +530,15 @@ function renderKategorien() {
             </div>
         `;
 
-        // Hauptkategorie Content (enthält Unterkategorien)
         const mainContent = document.createElement('div');
         mainContent.className = 'main-kategorie-content';
 
-        // Unterkategorien rendern
         Object.keys(mainKat.subcategories).forEach(subKey => {
             const subKat = mainKat.subcategories[subKey];
             const subSection = document.createElement('div');
             subSection.className = 'unterkategorie-section';
             subSection.setAttribute('data-kategorie', subKey);
 
-            // Unterkategorie Header mit Bewertungsbuttons
             const subHeader = document.createElement('div');
             subHeader.className = 'kategorie-header';
             subHeader.innerHTML = `
@@ -608,22 +557,16 @@ function renderKategorien() {
                 </div>
             `;
 
-            // Unterkategorie Content (Items + Notizen)
             const subContent = document.createElement('div');
             subContent.className = 'kategorie-subcontent';
-
-            // Items als Liste
             let itemsHTML = '<div class="subcategory-items"><h4>Beobachtungskriterien:</h4><ul>';
-            subKat.items.forEach(item => {
-                itemsHTML += `<li>${item}</li>`;
-            });
+            subKat.items.forEach(item => { itemsHTML += `<li>${item}</li>`; });
             itemsHTML += '</ul></div>';
-
             subContent.innerHTML = `
                 ${itemsHTML}
                 <div class="notes-section">
                     <label>Notizen zu ${subKey}:</label>
-                    <textarea class="category-notes" rows="3" placeholder="Ihre Beobachtungen zu dieser Unterkategorie..."></textarea>
+                    <textarea class="category-notes" rows="3" placeholder="Ihre Beobachtungen zu dieser Unterkategorie…"></textarea>
                 </div>
             `;
 
@@ -631,25 +574,20 @@ function renderKategorien() {
             subSection.appendChild(subContent);
             mainContent.appendChild(subSection);
 
-            // Event Listeners für Unterkategorie Rating Buttons
- // Event Listeners für Unterkategorie Rating Buttons
-const ratingButtons = subHeader.querySelectorAll('.rating-btn');
-ratingButtons.forEach(btn => {
-    btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const value = btn.getAttribute('data-value');
-        const currentValue = subSection.querySelector('.rating-value').textContent;
-        
-        // Wenn der gleiche Button nochmal geklickt wird, Bewertung zurücksetzen
-        if (currentValue === value) {
-            subSection.querySelector('.rating-value').textContent = '-- %';
-            updateRatingButtons(subSection, '-');
-        } else {
-            subSection.querySelector('.rating-value').textContent = value;
-            updateRatingButtons(subSection, value);
-        }
-    });
-});
+            subHeader.querySelectorAll('.rating-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const value = btn.getAttribute('data-value');
+                    const currentValue = subSection.querySelector('.rating-value').textContent;
+                    if (currentValue === value) {
+                        subSection.querySelector('.rating-value').textContent = '-- %';
+                        updateRatingButtons(subSection, '-');
+                    } else {
+                        subSection.querySelector('.rating-value').textContent = value;
+                        updateRatingButtons(subSection, value);
+                    }
+                });
+            });
         });
 
         mainDetails.appendChild(mainSummary);
@@ -658,108 +596,140 @@ ratingButtons.forEach(btn => {
     });
 }
 
-// Entferne die alten Toggle-Funktionen, da details/summary das automatisch macht
-
-// Rating Buttons Update
 function updateRatingButtons(section, activeValue) {
-    const buttons = section.querySelectorAll('.rating-btn');
-    buttons.forEach(btn => {
-        if (btn.getAttribute('data-value') === activeValue) {
-            btn.classList.add('active');
-        } else {
-            btn.classList.remove('active');
-        }
+    section.querySelectorAll('.rating-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-value') === activeValue);
     });
 }
 
-// Auswertung aktualisieren
+// Auswertung
 function updateAuswertung() {
     const data = collectFormData();
 
     // Stammdaten
-    const stammdatenOverview = document.getElementById('stammdaten-overview');
-    stammdatenOverview.innerHTML = `
-        <div><strong>Name:</strong> ${data.name || '-'}</div>
-        <div><strong>Klasse:</strong> ${data.klasse || '-'}</div>
-        <div><strong>Fach:</strong> ${data.fach || '-'}</div>
-        <div><strong>Thema:</strong> ${data.thema || '-'}</div>
-        <div><strong>Datum:</strong> ${data.datum || '-'}</div>
-        <div><strong>Dauer:</strong> ${data.dauer || '-'} Min</div>
+    document.getElementById('stammdaten-overview').innerHTML = `
+        <div><strong>Lehrkraft:</strong> ${data.name || '–'}</div>
+        <div><strong>Klasse:</strong> ${data.klasse || '–'}</div>
+        <div><strong>Fach:</strong> ${data.fach || '–'}</div>
+        <div><strong>Thema:</strong> ${data.thema || '–'}</div>
+        <div><strong>Datum:</strong> ${data.datum || '–'}</div>
+        <div><strong>Dauer:</strong> ${data.dauer || '–'} Min</div>
     `;
 
-    // Allgemeine Beobachtungen
-    if (data.generalNotes && data.generalNotes.trim() !== '<p><br></p>' && data.generalNotes.trim() !== '') {
-        let notesSection = document.getElementById('general-notes-display');
-        if (!notesSection) {
-            notesSection = document.createElement('div');
-            notesSection.id = 'general-notes-display';
-            notesSection.className = 'general-notes-display';
-            stammdatenOverview.parentElement.appendChild(notesSection);
-        }
-        notesSection.innerHTML = `
-            <h4>Allgemeine Beobachtungen</h4>
-            <div class="notes-content">${data.generalNotes}</div>
-        `;
-    }
-
-    // Phasen anzeigen - MIT BERECHNUNG AUS UHRZEITEN
+    // Phasen
     const phasenDisplay = document.getElementById('phasen-display');
     const phasenList = document.getElementById('phasen-list');
     if (data.phasen && data.phasen.length > 0) {
         phasenDisplay.style.display = 'block';
         phasenList.innerHTML = '';
-        
-        // Berechne Dauer aus Uhrzeiten
+
         const phasenMitDauer = data.phasen.map((phase, idx) => {
             let dauer = 0;
-            if (phase.uhrzeit && data.phasen[idx + 1] && data.phasen[idx + 1].uhrzeit) {
-                // Berechne Differenz zur nächsten Phase
+            if (phase.uhrzeit && data.phasen[idx + 1]?.uhrzeit) {
                 const [h1, m1] = phase.uhrzeit.split(':').map(Number);
                 const [h2, m2] = data.phasen[idx + 1].uhrzeit.split(':').map(Number);
                 dauer = (h2 * 60 + m2) - (h1 * 60 + m1);
-            } else if (idx === data.phasen.length - 1 && phase.uhrzeit) {
-                // Letzte Phase: berechne bis Stundenende (aus Gesamtdauer)
+            } else if (idx === data.phasen.length - 1 && phase.uhrzeit && data.phasen[0]?.uhrzeit) {
                 const [h, m] = phase.uhrzeit.split(':').map(Number);
-                const startMinuten = h * 60 + m;
-                // Nimm erste Phase als Start
-                if (data.phasen[0] && data.phasen[0].uhrzeit) {
-                    const [h0, m0] = data.phasen[0].uhrzeit.split(':').map(Number);
-                    const erstePhaseMinuten = h0 * 60 + m0;
-                    const gesamtMinuten = startMinuten - erstePhaseMinuten;
-                    dauer = (data.dauer || 45) - gesamtMinuten;
-                }
+                const [h0, m0] = data.phasen[0].uhrzeit.split(':').map(Number);
+                dauer = (data.dauer || 45) - ((h * 60 + m) - (h0 * 60 + m0));
             }
             return { ...phase, dauer: Math.max(0, dauer) };
         });
-        
-        phasenMitDauer.forEach((phase, idx) => {
-            const phaseItem = document.createElement('div');
-            phaseItem.className = 'phase-display-item';
-            phaseItem.innerHTML = `
-                <strong>${phase.uhrzeit || '-'}</strong> | 
-                <strong>Sozialform:</strong> ${phase.sozialform || '-'} | 
-                <strong>Dauer:</strong> ${phase.dauer || '-'} Min
-                ${phase.notiz ? `<br><em>${phase.notiz}</em>` : ''}
-            `;
-            phasenList.appendChild(phaseItem);
-        });
 
-        // Sozialformen-Verteilung berechnen MIT BERECHNETEN DAUERN
+        // Zeitstrahl
+        const totalDauer = phasenMitDauer.reduce((s, p) => s + (p.dauer || 0), 0) || 1;
+        const sfColors = {
+            'Einzelarbeit': '#3b82f6',
+            'Partnerarbeit': '#8b5cf6',
+            'Gruppenarbeit': '#10b981',
+            'Plenum':        '#f59e0b',
+            'Lehrervortrag': '#ef4444',
+            'Leerlauf':      '#94a3b8',
+            'Sonstiges':     '#06b6d4'
+        };
+
+        const segments = phasenMitDauer.map((phase, i) => {
+            const pct = ((phase.dauer || 0) / totalDauer * 100).toFixed(2);
+            const color = sfColors[phase.sozialform] || '#64748b';
+            const label = phase.sozialform || '–';
+            return `<div class="tz-segment" style="flex:${pct} 0 0%; background:${color};" title="${label}: ${phase.dauer} Min">
+                <span class="tz-seg-label">${label}</span>
+            </div>`;
+        }).join('');
+
+        const ticks = phasenMitDauer.map((phase, i) => {
+            const leftPct = phasenMitDauer.slice(0, i).reduce((s, p) => s + (p.dauer || 0), 0) / totalDauer * 100;
+            return `<div class="tz-tick" style="left:${leftPct.toFixed(2)}%">
+                <span class="tz-tick-label">${phase.uhrzeit || ''}</span>
+            </div>`;
+        }).join('');
+
+        // Last tick at end
+        const lastTick = (() => {
+            const last = phasenMitDauer[phasenMitDauer.length - 1];
+            if (last?.uhrzeit && last?.dauer) {
+                const [h, m] = last.uhrzeit.split(':').map(Number);
+                const endMin = h * 60 + m + (last.dauer || 0);
+                const endH = Math.floor(endMin / 60).toString().padStart(2,'0');
+                const endM = (endMin % 60).toString().padStart(2,'0');
+                return `<div class="tz-tick" style="left:100%"><span class="tz-tick-label">${endH}:${endM}</span></div>`;
+            }
+            return '';
+        })();
+
+        const notizen = phasenMitDauer.filter(p => p.notiz).map(p =>
+            `<div class="tz-notiz"><span class="tz-notiz-meta">${p.uhrzeit}${p.sozialform ? ' · ' + p.sozialform : ''}</span><span class="tz-notiz-text"><em>${p.notiz.replace(/\n/g, '<br>')}</em></span></div>`
+        ).join('');
+
+        phasenList.innerHTML = `
+            <div class="tz-wrap">
+                <div class="tz-bar">${segments}</div>
+                <div class="tz-ticks">${ticks}${lastTick}</div>
+            </div>
+            <div class="tz-legend">
+                ${Object.entries(
+                    phasenMitDauer.filter(p => p.dauer > 0 && p.sozialform).reduce((acc, p) => {
+                        acc[p.sozialform] = (acc[p.sozialform] || 0) + p.dauer;
+                        return acc;
+                    }, {})
+                ).sort((a,b) => b[1]-a[1]).map(([sf, min]) => {
+                    const color = sfColors[sf] || '#64748b';
+                    return `<span class="tz-legend-item"><span class="pie-dot" style="background:${color}"></span>${sf} <small>${min} Min</small></span>`;
+                }).join('')}
+            </div>
+            ${notizen ? `<div class="tz-notizen">${notizen}</div>` : ''}
+        `;
+
         calculateSozialformDistribution(phasenMitDauer, data.dauer);
     } else {
         phasenDisplay.style.display = 'none';
+        document.getElementById('sozialform-distribution').style.display = 'none';
     }
 
-    // Statistiken - VEREINFACHT
-    updateStatistics(data.kategorien);
+    // Allgemeine Beobachtungen (nach Phasen)
+    const notesValid = data.generalNotes && data.generalNotes.trim() !== '<p><br></p>' && data.generalNotes.trim() !== '';
+    let notesSection = document.getElementById('general-notes-display');
+    if (notesValid) {
+        if (!notesSection) {
+            notesSection = document.createElement('div');
+            notesSection.id = 'general-notes-display';
+            notesSection.className = 'card';
+            document.getElementById('sozialform-distribution').after(notesSection);
+        }
+        notesSection.innerHTML = `<h4>Allgemeine Beobachtungen</h4><div class="notes-content">${data.generalNotes}</div>`;
+    } else if (notesSection) {
+        notesSection.remove();
+    }
 
-    // Detailansicht - VEREINFACHT
+    updateStatistics(data.kategorien);
     updateDetails(data.kategorien);
 
     // Fotos
     const photosGrid = document.getElementById('auswertung-photos-grid');
+    const photosSection = document.getElementById('auswertung-photos');
     if (photos.length > 0) {
-        document.getElementById('auswertung-photos').style.display = 'block';
+        photosSection.style.display = 'block';
         photosGrid.innerHTML = '';
         photos.forEach(photo => {
             const img = document.createElement('img');
@@ -768,15 +738,13 @@ function updateAuswertung() {
             photosGrid.appendChild(img);
         });
     } else {
-        document.getElementById('auswertung-photos').style.display = 'none';
+        photosSection.style.display = 'none';
     }
 }
 
-// Sozialformen-Verteilung berechnen
 function calculateSozialformDistribution(phasen, gesamtdauer) {
     const distribution = {};
     let totalMinutes = 0;
-
     phasen.forEach(phase => {
         if (phase.sozialform && phase.dauer) {
             distribution[phase.sozialform] = (distribution[phase.sozialform] || 0) + phase.dauer;
@@ -784,133 +752,173 @@ function calculateSozialformDistribution(phasen, gesamtdauer) {
         }
     });
 
-    if (totalMinutes > 0) {
-        const distributionDiv = document.getElementById('sozialform-distribution');
-        distributionDiv.style.display = 'block';
+    const div = document.getElementById('sozialform-distribution');
+    if (totalMinutes === 0) { div.style.display = 'none'; return; }
 
-        const tbody = document.querySelector('#distribution-table tbody');
-        tbody.innerHTML = '';
+    div.style.display = 'block';
 
-        Object.entries(distribution).forEach(([sozialform, minuten]) => {
-            const prozent = ((minuten / totalMinutes) * 100).toFixed(1);
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${sozialform}</td>
-                <td>${minuten}</td>
-                <td>${prozent} %</td>
-            `;
-            tbody.appendChild(row);
-        });
-    } else {
-        document.getElementById('sozialform-distribution').style.display = 'none';
-    }
+    const sfColors = {
+        'Einzelarbeit': '#3b82f6', 'Partnerarbeit': '#8b5cf6', 'Gruppenarbeit': '#10b981',
+        'Plenum': '#f59e0b', 'Lehrervortrag': '#ef4444', 'Leerlauf': '#94a3b8', 'Sonstiges': '#06b6d4'
+    };
+    const fallback = ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#f97316'];
+    const entries = Object.entries(distribution).sort((a, b) => b[1] - a[1]);
+
+    const r = 80, cx = 100, cy = 100;
+    const circumference = 2 * Math.PI * r;
+    let offset = 0;
+
+    const slices = entries.map(([sf, min], i) => {
+        const pct = min / totalMinutes;
+        const dash = pct * circumference;
+        const gap  = circumference - dash;
+        const slice = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none"
+            stroke="${sfColors[sf] || fallback[i % fallback.length]}" stroke-width="36"
+            stroke-dasharray="${dash} ${gap}"
+            stroke-dashoffset="${-offset}"
+            transform="rotate(-90 ${cx} ${cy})"/>`;
+        offset += dash;
+        return slice;
+    });
+
+    const legend = entries.map(([sf, min], i) => {
+        const pct = ((min / totalMinutes) * 100).toFixed(1);
+        return `<div class="pie-legend-item">
+            <span class="pie-dot" style="background:${sfColors[sf] || fallback[i % fallback.length]}"></span>
+            <span class="pie-legend-label">${sf}</span>
+            <span class="pie-legend-value">${min} Min &nbsp;<strong>${pct} %</strong></span>
+        </div>`;
+    }).join('');
+
+    div.innerHTML = `
+        <h4>Sozialformen-Verteilung</h4>
+        <div class="pie-wrap">
+            <svg viewBox="0 0 200 200" class="pie-svg">
+                ${slices.join('')}
+                <text x="${cx}" y="${cy - 6}" text-anchor="middle" class="pie-center-top">${totalMinutes}</text>
+                <text x="${cx}" y="${cy + 14}" text-anchor="middle" class="pie-center-bot">Min</text>
+            </svg>
+            <div class="pie-legend">${legend}</div>
+        </div>`;
 }
 
-// Statistiken - KOMPAKT: Durchschnitt pro Hauptkategorie
 function updateStatistics(kategorienData) {
     const statsContainer = document.getElementById('stats-container');
     statsContainer.innerHTML = '';
 
-    // Durchlaufe Hauptkategorien
-    Object.keys(kategorien).forEach(mainKey => {
+    const catColors = { blue: '#3b82f6', green: '#10b981', yellow: '#f59e0b', orange: '#f97316', purple: '#8b5cf6', red: '#ef4444' };
+
+    // Collect data for all categories
+    const catData = Object.keys(kategorien).map(mainKey => {
         const mainKat = kategorien[mainKey];
         const subKeys = Object.keys(mainKat.subcategories);
-        
-        // Sammle Bewertungen für diese Hauptkategorie
-        const ratings = [];
-        let bewerteteAnzahl = 0;
-        
-        subKeys.forEach(subKey => {
-            if (kategorienData[subKey] && kategorienData[subKey].rating && kategorienData[subKey].rating !== '') {
-                const ratingNum = parseInt(kategorienData[subKey].rating);
-                if (!isNaN(ratingNum)) {
-                    ratings.push(ratingNum);
-                    bewerteteAnzahl++;
-                }
-            }
-        });
-
-        // Berechne Durchschnitt oder zeige "nicht bewertet"
-        let avgText = 'nicht bewertet';
-        let avgRounded = 'unbewertet';
-        
-        if (ratings.length > 0) {
-            const avg = ratings.reduce((a, b) => a + b, 0) / ratings.length;
-            avgRounded = `${Math.round(avg / 25) * 25}%`;
-            avgText = `Checklist: ${Math.round(avg)} %`;
-        }
-
-        // Erstelle kompakte Box
-        const statBox = document.createElement('div');
-        statBox.className = `stat-box color-${mainKat.color}`;
-        statBox.setAttribute('data-rating', avgRounded);
-        statBox.innerHTML = `
-            <div class="stat-box-title">${mainKey}. ${mainKat.title}</div>
-            <div class="stat-box-info">(${bewerteteAnzahl} von ${subKeys.length} bewertet)</div>
-            <div class="stat-box-value">${avgText}</div>
-        `;
-        statsContainer.appendChild(statBox);
+        const ratings = subKeys
+            .map(sk => kategorienData[sk]?.rating ? parseInt(kategorienData[sk].rating) : null)
+            .filter(n => n !== null && !isNaN(n));
+        const avg = ratings.length > 0 ? Math.round(ratings.reduce((a, b) => a + b, 0) / ratings.length) : null;
+        return { mainKey, mainKat, subKeys, ratings, avg };
     });
+
+    // SVG bar chart
+    const svgW = 600, svgH = 280;
+    const padL = 28, padR = 20, padT = 24, padB = 56;
+    const chartW = svgW - padL - padR;
+    const chartH = svgH - padT - padB;
+    const barCount = catData.length;
+    const barW = Math.floor(chartW / barCount * 0.55);
+    const gap   = Math.floor(chartW / barCount);
+
+    // Gridlines at 0,25,50,75,100
+    const gridLines = [0,25,50,75,100].map(v => {
+        const y = padT + chartH - (v / 100 * chartH);
+        return `<line x1="${padL}" y1="${y}" x2="${svgW - padR}" y2="${y}" stroke="var(--border)" stroke-width="1"/>
+                 <text x="${padL - 4}" y="${y + 4}" text-anchor="end" font-size="12" fill="var(--text-muted)">${v}</text>`;
+    }).join('');
+
+    const bars = catData.map(({ mainKey, mainKat, subKeys, ratings, avg }, i) => {
+        const x = padL + i * gap + (gap - barW) / 2;
+        const color = catColors[mainKat.color] || '#3b82f6';
+        if (avg === null) {
+            // Empty bar placeholder
+            return `<rect x="${x}" y="${padT}" width="${barW}" height="${chartH}" fill="var(--border)" rx="4" opacity="0.4"/>
+                     <text x="${x + barW/2}" y="${svgH - padB + 16}" text-anchor="middle" font-size="14" fill="var(--text-muted)">${mainKey}.</text>
+                     <text x="${x + barW/2}" y="${svgH - padB + 30}" text-anchor="middle" font-size="12" fill="var(--text-muted)">–</text>`;
+        }
+        const barH = avg / 100 * chartH;
+        const y = padT + chartH - barH;
+        return `<rect x="${x}" y="${y}" width="${barW}" height="${barH}" fill="${color}" rx="4"/>
+                 <text x="${x + barW/2}" y="${y - 5}" text-anchor="middle" font-size="14" font-weight="bold" fill="${color}">${avg} %</text>
+                 <text x="${x + barW/2}" y="${svgH - padB + 16}" text-anchor="middle" font-size="14" fill="var(--text)">${mainKey}.</text>
+                 <text x="${x + barW/2}" y="${svgH - padB + 34}" text-anchor="middle" font-size="12" fill="var(--text-muted)">${ratings.length}/${subKeys.length}</text>`;
+    }).join('');
+
+    const svg = `<svg viewBox="0 0 ${svgW} ${svgH}" class="col-chart-svg" preserveAspectRatio="xMidYMid meet">
+        ${gridLines}
+        ${bars}
+    </svg>`;
+
+    // Legend
+    const legend = catData.map(({ mainKey, mainKat, avg, ratings, subKeys }) => {
+        const color = catColors[mainKat.color] || '#3b82f6';
+        const avgRounded = avg !== null ? `${Math.round(avg / 25) * 25}%` : 'unbewertet';
+        return `<div class="col-legend-item" data-rating="${avgRounded}">
+            <span class="pie-dot" style="background:${avg !== null ? color : 'var(--border)'}"></span>
+            <span class="col-legend-label">${mainKey}. ${mainKat.title}</span>
+            <span class="col-legend-value">${avg !== null ? `Ø ${avg} %` : '–'} &nbsp;<small>${ratings.length}/${subKeys.length}</small></span>
+        </div>`;
+    }).join('');
+
+    statsContainer.innerHTML = `
+        <div class="col-chart-wrap">
+            ${svg}
+            <div class="col-legend">${legend}</div>
+        </div>`;
 }
 
-// Detailansicht - EINFACHE LISTE mit Prozenten rechts
 function updateDetails(kategorienData) {
-    const detailsContainer = document.getElementById('details-container');
-    detailsContainer.innerHTML = '';
+    const container = document.getElementById('details-container');
+    container.innerHTML = '';
 
-    // Durchlaufe Hauptkategorien
     Object.keys(kategorien).forEach(mainKey => {
         const mainKat = kategorien[mainKey];
-        
-        // Prüfe ob mindestens eine Unterkategorie bewertet wurde
-        const hasData = Object.keys(mainKat.subcategories).some(subKey => {
-            return kategorienData[subKey] && (kategorienData[subKey].rating || kategorienData[subKey].notes);
-        });
+        const hasData = Object.keys(mainKat.subcategories).some(
+            subKey => kategorienData[subKey] && (kategorienData[subKey].rating || kategorienData[subKey].notes)
+        );
 
         if (hasData) {
-            // Hauptkategorie-Überschrift
-            const mainTitle = document.createElement('h3');
-            mainTitle.className = 'detail-section-title';
-            mainTitle.textContent = mainKat.title;
-            detailsContainer.appendChild(mainTitle);
+            const title = document.createElement('h3');
+            title.className = 'detail-section-title';
+            title.textContent = mainKat.title;
+            container.appendChild(title);
 
-            // Unterkategorien als einfache Liste
             Object.keys(mainKat.subcategories).forEach(subKey => {
                 const subKat = mainKat.subcategories[subKey];
                 const subData = kategorienData[subKey];
-
                 if (subData && (subData.rating || subData.notes)) {
-                    const detailItem = document.createElement('div');
-                    detailItem.className = 'detail-list-item';
-                    
-                    let itemHTML = `
+                    const item = document.createElement('div');
+                    item.className = 'detail-list-item';
+                    item.innerHTML = `
                         <div class="detail-list-header">
                             <h4 class="detail-list-title">${subKey}: ${subKat.title}</h4>
                             <span class="detail-list-rating" data-rating="${subData.rating}">${subData.rating}</span>
                         </div>
+                        ${subData.notes ? `<div class="detail-list-notes">${subData.notes.replace(/\n/g, '<br>')}</div>` : ''}
                     `;
-                    
-                    if (subData.notes) {
-                        itemHTML += `<div class="detail-list-notes">${subData.notes.replace(/\n/g, '<br>')}</div>`;
-                    }
-                    
-                    detailItem.innerHTML = itemHTML;
-                    detailsContainer.appendChild(detailItem);
+                    container.appendChild(item);
                 }
             });
         }
     });
 
-    if (detailsContainer.children.length === 0) {
-        detailsContainer.innerHTML = '<p>Keine Detaildaten vorhanden.</p>';
+    if (container.children.length === 0) {
+        container.innerHTML = '<p style="color:var(--text-muted)">Keine Detaildaten vorhanden.</p>';
     }
 }
 
-// Export/Import
+// Export / Import
 function exportJSON() {
     const data = collectFormData();
-    const json = JSON.stringify(data, null, 2);
-    const blob = new Blob([json], { type: 'application/json' });
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -919,162 +927,88 @@ function exportJSON() {
     URL.revokeObjectURL(url);
 }
 
-// Markdown Export Funktion
 function exportMarkdown() {
     const data = collectFormData();
-    
-    // HTML zu Plaintext konvertieren (für generalNotes)
-    function htmlToPlaintext(html) {
-        const temp = document.createElement('div');
-        temp.innerHTML = html;
-        return temp.textContent || temp.innerText || '';
+
+    function htmlToText(html) {
+        const div = document.createElement('div');
+        div.innerHTML = html;
+        return div.textContent || div.innerText || '';
     }
-    
-    // Markdown-String erstellen
-    let markdown = `# Hospitationsbogen - Auswertung\n\n`;
-    
-    // Stammdaten
-    markdown += `## Stammdaten\n\n`;
-    markdown += `- **Name:** ${data.name || '-'}\n`;
-    markdown += `- **Klasse:** ${data.klasse || '-'}\n`;
-    markdown += `- **Fach:** ${data.fach || '-'}\n`;
-    markdown += `- **Thema:** ${data.thema || '-'}\n`;
-    markdown += `- **Datum:** ${data.datum || '-'}\n`;
-    markdown += `- **Dauer:** ${data.dauer || '-'} Min\n\n`;
-    
-    // Allgemeine Beobachtungen
-    if (data.generalNotes && data.generalNotes.trim() !== '<p><br></p>' && data.generalNotes.trim() !== '') {
-        markdown += `### Allgemeine Beobachtungen\n\n`;
-        markdown += `${htmlToPlaintext(data.generalNotes)}\n\n`;
+
+    let md = `# Hospitationsbogen\n\n`;
+    md += `## Stammdaten\n\n`;
+    md += `- **Lehrkraft:** ${data.name || '–'}\n`;
+    md += `- **Klasse:** ${data.klasse || '–'}\n`;
+    md += `- **Fach:** ${data.fach || '–'}\n`;
+    md += `- **Thema:** ${data.thema || '–'}\n`;
+    md += `- **Datum:** ${data.datum || '–'}\n`;
+    md += `- **Dauer:** ${data.dauer || '–'} Min\n\n`;
+
+    if (data.generalNotes && data.generalNotes.trim() !== '<p><br></p>') {
+        md += `### Allgemeine Beobachtungen\n\n${htmlToText(data.generalNotes)}\n\n`;
     }
-    
-    // Verlauf der Stunde
+
     if (data.phasen && data.phasen.length > 0) {
-        markdown += `## Verlauf der Stunde\n\n`;
-        
-        // Berechne Dauer aus Uhrzeiten
+        md += `## Verlauf der Stunde\n\n`;
         const phasenMitDauer = data.phasen.map((phase, idx) => {
             let dauer = 0;
-            if (phase.uhrzeit && data.phasen[idx + 1] && data.phasen[idx + 1].uhrzeit) {
+            if (phase.uhrzeit && data.phasen[idx + 1]?.uhrzeit) {
                 const [h1, m1] = phase.uhrzeit.split(':').map(Number);
                 const [h2, m2] = data.phasen[idx + 1].uhrzeit.split(':').map(Number);
                 dauer = (h2 * 60 + m2) - (h1 * 60 + m1);
-            } else if (idx === data.phasen.length - 1 && phase.uhrzeit) {
-                const [h, m] = phase.uhrzeit.split(':').map(Number);
-                const startMinuten = h * 60 + m;
-                if (data.phasen[0] && data.phasen[0].uhrzeit) {
-                    const [h0, m0] = data.phasen[0].uhrzeit.split(':').map(Number);
-                    const erstePhaseMinuten = h0 * 60 + m0;
-                    const gesamtMinuten = startMinuten - erstePhaseMinuten;
-                    dauer = (data.dauer || 45) - gesamtMinuten;
-                }
             }
             return { ...phase, dauer: Math.max(0, dauer) };
         });
-        
-        phasenMitDauer.forEach(phase => {
-            markdown += `**${phase.uhrzeit || '-'}** | **Sozialform:** ${phase.sozialform || '-'} | **Dauer:** ${phase.dauer || '-'} Min`;
-            if (phase.notiz) {
-                markdown += `  \n*${phase.notiz}*`;
-            }
-            markdown += `\n\n`;
+
+        phasenMitDauer.forEach(p => {
+            md += `**${p.uhrzeit || '–'}** | ${p.sozialform || '–'} | ${p.dauer || '–'} Min`;
+            if (p.notiz) md += `  \n*${p.notiz.replace(/\n/g, "  \n")}*`;
+            md += `\n\n`;
         });
-        
-        // Sozialformen-Verteilung
-        const distribution = {};
-        let totalMinutes = 0;
-        phasenMitDauer.forEach(phase => {
-            if (phase.sozialform && phase.dauer) {
-                distribution[phase.sozialform] = (distribution[phase.sozialform] || 0) + phase.dauer;
-                totalMinutes += phase.dauer;
-            }
+
+        const dist = {};
+        let total = 0;
+        phasenMitDauer.forEach(p => {
+            if (p.sozialform && p.dauer) { dist[p.sozialform] = (dist[p.sozialform] || 0) + p.dauer; total += p.dauer; }
         });
-        
-        if (totalMinutes > 0) {
-            markdown += `### Prozentuale Verteilung der Sozialformen (in Minuten)\n\n`;
-            markdown += `| Sozialform | Minuten | Prozent |\n`;
-            markdown += `|------------|---------|----------|\n`;
-            Object.entries(distribution).forEach(([sozialform, minuten]) => {
-                const prozent = ((minuten / totalMinutes) * 100).toFixed(1);
-                markdown += `| ${sozialform} | ${minuten} | ${prozent} % |\n`;
-            });
-            markdown += `\n`;
+        if (total > 0) {
+            md += `### Sozialformen-Verteilung\n\n| Sozialform | Minuten | Prozent |\n|---|---|---|\n`;
+            Object.entries(dist).forEach(([sf, min]) => { md += `| ${sf} | ${min} | ${((min / total) * 100).toFixed(1)} % |\n`; });
+            md += `\n`;
         }
     }
-    
-    // Durchschnittsbeobachtungen
-    markdown += `## Durchschnittsbeobachtungen (in %)\n\n`;
+
+    md += `## Durchschnittsbeobachtungen\n\n`;
     Object.keys(kategorien).forEach(mainKey => {
         const mainKat = kategorien[mainKey];
-        const subKeys = Object.keys(mainKat.subcategories);
-        
-        const ratings = [];
-        let bewerteteAnzahl = 0;
-        
-        subKeys.forEach(subKey => {
-            if (data.kategorien[subKey] && data.kategorien[subKey].rating && data.kategorien[subKey].rating !== '') {
-                const ratingNum = parseInt(data.kategorien[subKey].rating);
-                if (!isNaN(ratingNum)) {
-                    ratings.push(ratingNum);
-                    bewerteteAnzahl++;
-                }
-            }
-        });
-        
-        let avgText = 'nicht bewertet';
-        if (ratings.length > 0) {
-            const avg = ratings.reduce((a, b) => a + b, 0) / ratings.length;
-            avgText = `Checklist: ${Math.round(avg)} %`;
-        }
-        
-        markdown += `### ${mainKey}. ${mainKat.title}\n`;
-        markdown += `(${bewerteteAnzahl} von ${subKeys.length} bewertet)  \n`;
-        markdown += `${avgText}\n\n`;
+        const ratings = Object.keys(mainKat.subcategories)
+            .map(sk => data.kategorien[sk]?.rating ? parseInt(data.kategorien[sk].rating) : null)
+            .filter(n => n !== null && !isNaN(n));
+        const avg = ratings.length ? Math.round(ratings.reduce((a, b) => a + b, 0) / ratings.length) : null;
+        md += `### ${mainKey}. ${mainKat.title}\n${ratings.length} von ${Object.keys(mainKat.subcategories).length} bewertet — ${avg !== null ? `Ø ${avg} %` : 'nicht bewertet'}\n\n`;
     });
-    
-    // Detailansicht
-    markdown += `## Detailansicht\n\n`;
-    let hasDetails = false;
-    
+
+    md += `## Detailansicht\n\n`;
     Object.keys(kategorien).forEach(mainKey => {
         const mainKat = kategorien[mainKey];
-        const hasData = Object.keys(mainKat.subcategories).some(subKey => {
-            return data.kategorien[subKey] && (data.kategorien[subKey].rating || data.kategorien[subKey].notes);
-        });
-        
+        const hasData = Object.keys(mainKat.subcategories).some(sk => data.kategorien[sk]?.rating || data.kategorien[sk]?.notes);
         if (hasData) {
-            hasDetails = true;
-            markdown += `### ${mainKat.title}\n\n`;
-            
-            Object.keys(mainKat.subcategories).forEach(subKey => {
-                const subKat = mainKat.subcategories[subKey];
-                const subData = data.kategorien[subKey];
-                
-                if (subData && (subData.rating || subData.notes)) {
-                    markdown += `#### ${subKey}: ${subKat.title}\n`;
-                    if (subData.rating) {
-                        markdown += `**Bewertung:** ${subData.rating}\n\n`;
-                    }
-                    if (subData.notes) {
-                        markdown += `${subData.notes}\n\n`;
-                    }
+            md += `### ${mainKat.title}\n\n`;
+            Object.keys(mainKat.subcategories).forEach(sk => {
+                const subData = data.kategorien[sk];
+                if (subData?.rating || subData?.notes) {
+                    md += `#### ${sk}: ${kategorien[mainKey].subcategories[sk].title}\n`;
+                    if (subData.rating) md += `**Bewertung:** ${subData.rating}\n\n`;
+                    if (subData.notes) md += `${subData.notes}\n\n`;
                 }
             });
         }
     });
-    
-    if (!hasDetails) {
-        markdown += `Keine Detaildaten vorhanden.\n\n`;
-    }
-    
-    // Fotos (Info, dass Fotos nicht exportiert werden)
-    if (photos.length > 0) {
-        markdown += `## Fotos\n\n`;
-        markdown += `${photos.length} Foto(s) in der Session vorhanden (Fotos können nicht in Markdown exportiert werden).\n\n`;
-    }
-    
-    // Markdown-Datei erstellen und herunterladen
-    const blob = new Blob([markdown], { type: 'text/markdown;charset=utf-8' });
+
+    if (photos.length > 0) md += `## Fotos\n\n${photos.length} Foto(s) vorhanden (nicht exportierbar).\n\n`;
+
+    const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -1086,14 +1020,19 @@ function exportMarkdown() {
 function importJSON(event) {
     const file = event.target.files[0];
     if (!file) return;
-
     const reader = new FileReader();
-    reader.onload = function (e) {
+    reader.onload = (e) => {
         try {
             const data = JSON.parse(e.target.result);
+            // Always create a new session, never overwrite the current one
+            currentSessionId = 'session_' + Date.now();
+            sessions[currentSessionId] = data;
+            saveSessions();
             loadFormData(data);
-            alert('Daten erfolgreich importiert.');
-        } catch (error) {
+            updateSessionSelect();
+            switchTab('stammdaten');
+            alert('Import erfolgreich – neue Session angelegt.');
+        } catch {
             alert('Fehler beim Importieren: Ungültige JSON-Datei.');
         }
     };
@@ -1101,97 +1040,13 @@ function importJSON(event) {
     event.target.value = '';
 }
 
-// Standarddatum setzen
 function setDefaultDate() {
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('datum').value = today;
-}
-
-// Input Validierung
-function validateInputs() {
-    const name = document.getElementById('name').value.trim();
-    const datum = document.getElementById('datum').value;
-    
-    if (!name) {
-        alert('Bitte geben Sie den Namen der Lehrkraft ein.');
-        return false;
-    }
-    
-    if (!datum) {
-        alert('Bitte geben Sie ein Datum ein.');
-        return false;
-    }
-    
-    return true;
-}
-
-// Hilfsfunktion: Alle Kategorien aufklappen
-function expandAllKategorien() {
-    document.querySelectorAll('.kategorie-content').forEach(content => {
-        const toggle = content.previousElementSibling.querySelector('.kategorie-toggle');
-        if (!content.classList.contains('active')) {
-            content.classList.add('active');
-            toggle.textContent = '×';
-            content.style.maxHeight = content.scrollHeight + 'px';
-        }
-    });
-}
-
-// Hilfsfunktion: Alle Kategorien zuklappen
-function collapseAllKategorien() {
-    document.querySelectorAll('.kategorie-content').forEach(content => {
-        const toggle = content.previousElementSibling.querySelector('.kategorie-toggle');
-        if (content.classList.contains('active')) {
-            content.classList.remove('active');
-            toggle.textContent = '+';
-            content.style.maxHeight = '0px';
-        }
-    });
-}
-
-// Hilfsfunktion: Prüfe ob Formular leer ist
-function isFormEmpty() {
-    const name = document.getElementById('name').value.trim();
-    const klasse = document.getElementById('klasse').value.trim();
-    const fach = document.getElementById('fach').value.trim();
-    const thema = document.getElementById('thema').value.trim();
-    
-    // Prüfe ob mindestens eines der Felder ausgefüllt ist
-    return !(name || klasse || fach || thema);
-}
-
-// Hilfsfunktion: Formatiere Datum für Anzeige
-function formatDate(dateString) {
-    if (!dateString) return '-';
-    const date = new Date(dateString);
-    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-    return date.toLocaleDateString('de-DE', options);
-}
-
-// Hilfsfunktion: Escape HTML
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
+    document.getElementById('datum').value = new Date().toISOString().split('T')[0];
 }
 
 // Keyboard Shortcuts
-document.addEventListener('keydown', function(e) {
-    // Ctrl/Cmd + S zum Speichern
-    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-        e.preventDefault();
-        saveCurrentSession();
-    }
-    
-    // Ctrl/Cmd + N für neue Session
-    if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
-        e.preventDefault();
-        createNewSession();
-    }
-    
-    // Ctrl/Cmd + E für Export
-    if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
-        e.preventDefault();
-        exportJSON();
-    }
+document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); saveCurrentSession(); }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'n') { e.preventDefault(); createNewSession(); }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'e') { e.preventDefault(); exportJSON(); }
 });
