@@ -1,3 +1,4 @@
+const CACHE_NAME = 'hospitation-cache-v1';
 const urlsToCache = [
   '/hospitation/',
   '/hospitation/index.html',
