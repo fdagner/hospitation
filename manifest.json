@@ -3,14 +3,15 @@
   "short_name": "Hospitation",
   "description": "Hospitationen erfassen, durchführen und exportieren",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#3b82f6",
   "theme_color": "#f8fafc",
   "icons": [
-    {
-      "src": "/icons/edit-document-icon.svg",
+        {
+      "src": "/icons/icon.png",
       "sizes": "any",
-      "type": "image/svg"
+      "type": "image/png"
     }
   ]
 }
