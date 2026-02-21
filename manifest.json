@@ -10,7 +10,7 @@
     {
       "src": "/icons/edit-document-icon.svg",
       "sizes": "any",
-      "type": "image/png"
+      "type": "image/svg"
     }
   ]
 }
