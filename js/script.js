@@ -152,7 +152,7 @@ function initTheme() {
 function applyTheme(light) {
     document.documentElement.classList.toggle('light', light);
     const btn = document.getElementById('theme-toggle');
-    if (btn) btn.textContent = light ? 'Dark' : 'Light';
+    if (btn) btn.textContent = light ? 'Licht aus' : 'Licht an';
     localStorage.setItem('hospitationsTheme', light ? 'light' : 'dark');
 }
 
