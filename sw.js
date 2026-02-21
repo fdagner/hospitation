@@ -1,13 +1,12 @@
-const CACHE_NAME = 'hospitation-cache-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/css/style.css',
-  '/css/quill.snow.css',
-  '/js/script.js',
-  '/js/quill.min.js',
-  '/icons/icon.png',
-  '/manifest.json',
+  '/hospitation/',
+  '/hospitation/index.html',
+  '/hospitation/css/style.css',
+  '/hospitation/css/quill.snow.css',
+  '/hospitation/js/script.js',
+  '/hospitation/js/quill.min.js',
+  '/hospitation/icons/icon.png',
+  '/hospitation/manifest.json',
 ];
 
 self.addEventListener('install', event => {
