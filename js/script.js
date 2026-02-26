@@ -454,6 +454,7 @@ function addPhase(uhrzeit = '', sozialform = '', notiz = '') {
             <option value="Gruppenarbeit" ${sozialform === 'Gruppenarbeit' ? 'selected' : ''}>Gruppenarbeit</option>
             <option value="Plenum" ${sozialform === 'Plenum' ? 'selected' : ''}>Plenum</option>
             <option value="Lehrervortrag" ${sozialform === 'Lehrervortrag' ? 'selected' : ''}>Lehrervortrag</option>
+            <option value="Instruktion" ${sozialform === 'Instruktion' ? 'selected' : ''}>Instruktion</option>
             <option value="Leerlauf" ${sozialform === 'Leerlauf' ? 'selected' : ''}>Leerlauf</option>
             <option value="Sonstiges" ${sozialform === 'Sonstiges' ? 'selected' : ''}>Sonstiges</option>
         </select>
@@ -645,6 +646,7 @@ function updateAuswertung() {
             'Gruppenarbeit': '#10b981',
             'Plenum':        '#f59e0b',
             'Lehrervortrag': '#ef4444',
+            'Instruktion': '#ef44c4',
             'Leerlauf':      '#94a3b8',
             'Sonstiges':     '#06b6d4'
         };
