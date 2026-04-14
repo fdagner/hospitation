@@ -261,10 +261,10 @@ function createNewSession() {
     } else if (hasUnsavedChanges()) {
         if (confirm('Aktuelle Daten speichern?')) {
             saveCurrentSession();
-            if (!currentSessionId) return;
         }
     }
 
+    // Immer zurücksetzen, egal ob gespeichert oder nicht
     currentSessionId = null;
     clearForm();
     updateSessionSelect();
@@ -381,14 +381,16 @@ function clearForm() {
     document.getElementById('phasen-fields').innerHTML = '';
     addPhase();
 
-    document.querySelectorAll('.unterkategorie-section').forEach(section => {
-        section.querySelector('.rating-value').textContent = '-- %';
-        const notesDiv = section.querySelector('.category-notes');
-        if (notesDiv) notesDiv.value = '';
-        updateRatingButtons(section, '-');
-    });
+document.querySelectorAll('.unterkategorie-section').forEach(section => {
+    section.querySelector('.rating-value').textContent = '-- %';
+    const notesDiv = section.querySelector('.category-notes');
+    if (notesDiv) notesDiv.value = '';
+    // Alle aktiven Buttons deaktivieren
+    section.querySelectorAll('.rating-btn').forEach(btn => btn.classList.remove('active'));
+});
 
-    document.querySelectorAll('details.main-kategorie').forEach(d => d.removeAttribute('open'));
+// Alle aufgeklappten Kategorien schließen
+document.querySelectorAll('details').forEach(d => d.removeAttribute('open'));
 
     photos = [];
     document.getElementById('photos-preview').innerHTML = '';
